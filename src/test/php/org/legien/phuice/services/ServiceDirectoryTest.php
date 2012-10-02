@@ -4,14 +4,20 @@
 
 	use org\legien\phuice\services\ServiceDirectory;
 	use org\legien\phuice\testing\MockObject;
+	use org\legien\phuice\testing\TestBase;
+	use org\legien\phuice\logging\StdOutLogger;
 
-	class ServiceDirectoryTest extends PHPUnit_Framework_Testcase {
+	class ServiceDirectoryTest extends TestBase {
 
 		public function setUp() {
 			$this->directory = new ServiceDirectory;
+			$this->logger = $this->getLogger(__CLASS__);
 		}
 
 		public function testSharedRegistration() {
+
+			$this->logger->debug('Testing shared service registration.');
+
 			$this->assertFalse($this->directory->hasService('shared'));
 
 			$this->directory->register('shared', function($c) {
@@ -29,6 +35,9 @@
 		}
 
 		public function testNoneSharedRegistration() {
+
+			$this->logger->debug('Testing not shared service registration.');
+
 			$this->assertFalse($this->directory->hasService('notshared'));
 			
 			$this->directory->register('notshared', function($c) {

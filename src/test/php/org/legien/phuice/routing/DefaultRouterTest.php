@@ -6,17 +6,20 @@
 	use org\legien\phuice\routing\MockCallTarget;
 	use org\legien\phuice\routing\Route;
 	use org\legien\phuice\services\ServiceDirectory;
+	use org\legien\phuice\testing\TestBase;
 
-	class DefaultRouterTest extends PHPUnit_Framework_Testcase {
+	class DefaultRouterTest extends TestBase {
 
 		public function setUp() {
 
-			$this->serviceDirectory = new ServiceDirectory();
+			$this->logger = $this->getLogger(__CLASS__);
+			$this->serviceDirectory = new ServiceDirectory;
 			$this->serviceDirectory->register('mock', new MockCallTarget());
-
 		}
 
-		public function testSomething() {
+		public function testSuccessfulServiceCall() {
+
+			$this->logger->debug('Testing if a specified service is called correctly.');
 
 			$router = new DefaultRouter($this->serviceDirectory);
 			$router->addRoute(new Route(':controller/:method/:id'));
