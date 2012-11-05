@@ -6,21 +6,33 @@
 
 	class Classloader {
 
-		protected $loaders = array();
+		private static $_instance = NULL;
 
-		public function __construct($loaders = array()) {
-			foreach((array) $loaders as $key => $value) {
-				$this->setPathClosure($key, $value);
-			}
+		protected $_loaders = array();
+
+		private function __construct() {
 			spl_autoload_register(array($this, 'loader'));
 		}
 
 		protected function setPathClosure($name, $code) {
-			$this->loaders[$name] = $code;
+			$this->_loaders[$name] = $code;
+		}
+
+		public function addLoaders($loaders = array()) {
+			foreach((array) $loaders as $key => $value) {
+				$this->setPathClosure($key, $value);
+			}
+		}
+
+		public function getInstance() {
+			if(is_null(self::$_instance)) {
+				self::$_instance = new self();
+			}
+			return self::$_instance;
 		}
 
 		protected function loader($className) {
-			foreach($this->loaders as $value) {
+			foreach($this->_loaders as $name => $value) {
 				$filename = $value($className);
 				if(is_readable($filename)) {
 					include_once($filename);
@@ -32,5 +44,4 @@
 				throw new ClassNotFoundException('Class ' . $className . ' could not be loaded.');
 			}
 		}
-
 	}

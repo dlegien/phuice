@@ -1,12 +1,9 @@
 <?php
 
-	ini_set('display_errors', '0');
-	error_reporting(E_ALL);
-
 	include_once('main/php/org/legien/phuice/Classloader.php');
 
-	new org\legien\phuice\Classloader(
-		array(
+	$loader = org\legien\phuice\Classloader::getInstance();
+	$loader->addLoaders(array(
 			'standard' => function($className) {
 				$p = 'main/php/'
 					. str_replace('\\', '/', $className)
