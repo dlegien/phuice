@@ -30,9 +30,6 @@
 						throw new \Exception('404');
 					}
 				}
-				else {
-					var_dump('didn\'t match');
-				}
 			}
 		}
 

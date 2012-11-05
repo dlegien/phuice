@@ -37,7 +37,6 @@
 				}
 				$this->setMatched(TRUE);
 			}
-
 			$this->setProcessed(TRUE);
 		}
 
