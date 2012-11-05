@@ -2,16 +2,18 @@
 
 	namespace org\legien\phuice\services;
 
+	use org\legien\phuice\services\ServiceException;
+
 	class ServiceDirectory {
 
-		private $services;
+		private $_services;
+		private $_parameters;
 
 		public function register($name, $service, $shared = FALSE) {
-
 			if($shared) {
-				$this->services[$name] = $this->registerShared($service);
+				$this->_services[$name] = $this->registerShared($service);
 			} else {
-				$this->services[$name] = $service;
+				$this->_services[$name] = $service;
 			}
 		}
 
@@ -27,11 +29,35 @@
 			};
 		}
 
+		private function resolveName($name) {
+			if(substr($name, 0, 2) == '%%' && substr($name, strlen($name)-2, 2) == '%%') {
+				return $this->getParameter(substr($name,2,strlen($name)-4));
+			}
+			return $name;
+		}
+
 		public function getService($name) {
-			return is_callable($this->services[$name]) ? $this->services[$name]($this) : $this->services[$name];
+
+			$name = $this->resolveName($name);
+
+			if(!isset($this->_services[$name])) {
+				throw new ServiceException('Could not resolve service ' . $name . '.');
+			}
+			return is_callable($this->_services[$name]) ? $this->_services[$name]($this) : $this->_services[$name];
 		}
 
 		public function hasService($name) {
-			return isset($this->services[$name]);
+			return isset($this->_services[$name]);
+		}
+
+		public function setParameters($parameters = array()) {
+			$this->_parameters = $parameters;
+		}
+
+		public function getParameter($name) {
+			if(!isset($this->_parameters[$name])) {
+				throw new ServiceException('Parameter ' . $name . ' could not be resolved.');
+			}
+			return $this->_parameters[$name];
 		}
 	}
