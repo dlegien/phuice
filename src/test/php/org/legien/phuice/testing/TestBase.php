@@ -6,17 +6,17 @@
 
 	abstract class TestBase extends \PHPUnit_Framework_Testcase {
 
-		private $loggers;
+		private $_loggers;
 
 		public function __construct() {
-			$this->loggers = array();
+			$this->_loggers = array();
 		}
 		
 		protected function getLogger($name) {
-			if(!isset($this->loggers[$name])) {
-				$this->loggers[$name] = new StdOutLogger($name);
+			if(!isset($this->_loggers[$name])) {
+				$this->_loggers[$name] = new StdOutLogger($name);
 			}
-			return $this->loggers[$name];
+			return $this->_loggers[$name];
 		}
 
 	}

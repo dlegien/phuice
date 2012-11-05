@@ -4,21 +4,21 @@
 
 	class MockObject {
 
-		private $attributes;
+		private $_attributes;
 
 		public function __construct() {
-			$this->attributes = array();
+			$this->_attributes = array();
 		}
 
 		public function setAttribute($name, $value) {
-			$this->attributes[$name] = $value;
+			$this->_attributes[$name] = $value;
 		}
 
 		public function getAttribute($name) {
-			return $this->attributes[$name];
+			return $this->_attributes[$name];
 		}
 
 		public function hasAttribute($name) {
-			return isset($this->attributes[$name]);
+			return isset($this->_attributes[$name]);
 		}
 	}

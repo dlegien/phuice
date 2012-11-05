@@ -1,0 +1,17 @@
+<phpunit bootstrap="../testloader.php"
+	 colors="true"
+	 convertErrorsToExceptions="true"
+	 convertNoticesToExceptions="true"
+	 convertWarningsToExceptions="true"
+	 stopOnFailure="true">
+
+	<testsuite name="TestSuite">
+		<directory>../src/test/php/</directory>
+	</testsuite>
+
+	<logging>
+		<log type="coverage-html" target="./log/report" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="80" />
+		<log type="testdox" target="./log/testdox.html" />
+	</logging>
+
+</phpunit>

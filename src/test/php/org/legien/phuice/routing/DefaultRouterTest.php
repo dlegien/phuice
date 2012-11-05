@@ -1,7 +1,5 @@
 <?php
 
-	require_once('testloader.php');
-
 	use org\legien\phuice\routing\DefaultRouter;
 	use org\legien\phuice\routing\MockCallTarget;
 	use org\legien\phuice\routing\Route;
