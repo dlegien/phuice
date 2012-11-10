@@ -15,7 +15,7 @@
 		private $_sessionManager;
 		private $_hashWrapper;
 
-		public function __construct(ViewWrapper $view, AuthenticationStorage $gateway, SessionManager $sessionManager, HashWrapper $hashwrapper) {
+		public function __construct(ViewWrapper $view, AuthenticationStorage $gateway, SessionManager $sessionManager, HashWrapper $hashWrapper) {
 			$this->setView($view);
 			$this->setGateway($gateway);
 			$this->setSessionManager($sessionManager);
@@ -53,8 +53,8 @@
 			return FALSE;
 		}
 
-		public function hashPassword($password) {
-			return $this->getHashWrapper()->hashPassword(password);
+		public function verifyPassword($hash, $input) {
+			return $this->getHashWrapper()->verifyPassword($hash, $input);
 		}
 
 		public function authenticate($username, $password, $redirect) {
@@ -62,7 +62,7 @@
 			$gateway = $this->getGateway();
 		
 			if($user = $gateway->findByUsername($username)) {
-				if($this->hashPassword($password) == $user->getPassword()) {
+				if($this->verifyPassword($user->getPassword(), $password)) {
 					$this->getSessionManager()->startSession($user->getId(), time());
 					$this->redirect($redirect);
 				}

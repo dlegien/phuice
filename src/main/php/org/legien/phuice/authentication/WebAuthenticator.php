@@ -8,6 +8,6 @@
 
 		public function showAuthentication();
 
-		public function hashPassword($password);
+		public function verifyPassword($hash, $input);
 
 	}
