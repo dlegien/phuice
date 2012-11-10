@@ -4,6 +4,7 @@
 
 	class LayoutWrapper {
 
+		private $_vars;
 		private $_filename;
 		private $_content;
 
@@ -33,5 +34,17 @@
 
 		protected function decodeUrl($url) {
 			return str_replace('_', '/', $url);
+		}
+		
+		public function __set($name, $value) {
+			$this->_vars[$name] = $value;
+		}
+		
+		public function __get($name) {
+			return $this->_vars[$name];
+		}
+		
+		public function __isset($name) {
+			return isset($this->_vars[$name]);
 		}
 	}
