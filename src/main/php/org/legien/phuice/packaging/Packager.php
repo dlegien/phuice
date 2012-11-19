@@ -43,11 +43,12 @@
 		}
 
 		public function package() {
-			$phar = new \Phar($this->getFileName(), 0, $this->getPharName());
+			$phar = new \Phar($this->getFileName(), 0, $this->getPharName());				
 			$phar->buildFromIterator(
 				new \RecursiveIteratorIterator(
-					new \RecursiveDirectoryIterator($this->getSrcPath())
-				), $this->getSrcPath()
+						new \RecursiveDirectoryIterator($this->getSrcPath(), \FilesystemIterator::SKIP_DOTS)
+				)					
+				, $this->getSrcPath()
 			);
 			$phar->setStub($phar->createDefaultStub($this->getStub()));
 		}
