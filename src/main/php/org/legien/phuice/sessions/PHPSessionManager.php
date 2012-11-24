@@ -28,6 +28,7 @@
 
 		public function destroySession() {
 			if(isset($_SESSION)) {
+				session_start();
 				session_destroy();
 			}
 		}
@@ -49,6 +50,18 @@
 
 		private function setUid($uid) {
 			$_SESSION['uid'] = $uid;
+		}
+		
+		public function getUid() {
+			return isset($_SESSION['uid']) ? $_SESSION['uid'] : NULL;
+		}
+		
+		public function setLanguage($language) {
+			$_SESSION['language'] = $language;
+		}
+		
+		public function getLanguage() {
+			return isset($_SESSION['language']) ? $_SESSION['language'] : NULL;
 		}
 
 		public function startSession($uid, $timestamp) {

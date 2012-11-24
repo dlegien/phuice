@@ -6,6 +6,7 @@
 		private $id;
 		private $username;
 		private $password;
+		private $language;
 
 		public function setUsername($username) {
 			$this->username = $username;
@@ -29,5 +30,13 @@
 	
 		public function getId() {
 			return $this->id;
+		}
+		
+		public function setLanguage($language) {
+			$this->language = $language;
+		}
+		
+		public function getLanguage() {
+			return $this->language;
 		}
 	}

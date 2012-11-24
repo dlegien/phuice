@@ -5,5 +5,11 @@
 	interface SessionManager {
 
 		public function hasActiveSession();
+		
+		public function setLanguage($language);
+		
+		public function getLanguage();
+		
+		public function getUid();
 
 	}

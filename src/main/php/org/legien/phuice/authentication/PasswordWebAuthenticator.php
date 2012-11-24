@@ -64,6 +64,7 @@
 			if($user = $gateway->findByUsername($username)) {
 				if($this->verifyPassword($user->getPassword(), $password)) {
 					$this->getSessionManager()->startSession($user->getId(), time());
+					$this->getSessionManager()->setLanguage($user->getLanguage());
 					$this->redirect($redirect);
 				}
 				else
