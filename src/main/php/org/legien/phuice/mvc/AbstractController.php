@@ -19,4 +19,8 @@
 		protected function getView() {
 			return $this->view;
 		}
+		
+		protected function redirect($redirect) {
+			header("Location: $redirect");
+		}
 	}

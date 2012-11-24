@@ -1,7 +1,5 @@
 <?php
 
-	require_once('testloader.php');
-
 	use org\legien\phuice\services\ServiceDirectory;
 	use org\legien\phuice\testing\MockObject;
 	use org\legien\phuice\testing\TestBase;
