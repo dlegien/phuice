@@ -1,12 +1,12 @@
-<phpunit bootstrap="../testloader.php"
-	 colors="true"
+<phpunit bootstrap="testloader.php"
+	 colors="false"
 	 convertErrorsToExceptions="true"
 	 convertNoticesToExceptions="true"
 	 convertWarningsToExceptions="true"
-	 stopOnFailure="true">
+	 stopOnFailure="false">
 
 	<testsuite name="TestSuite">
-		<directory>../src/test/php/</directory>
+		<directory>src/test/php/</directory>
 	</testsuite>
 
 	<logging>
