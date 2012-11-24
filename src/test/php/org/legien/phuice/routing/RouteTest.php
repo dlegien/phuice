@@ -1,7 +1,5 @@
 <?php
 
-	require_once('testloader.php');
-
 	use org\legien\phuice\routing\Route;
 	use org\legien\phuice\testing\TestBase;
 
@@ -20,4 +18,14 @@
 			$this->assertTrue($route->isMatched()); 
 
 		}
+		
+		public function testComplexRouteMatching() {
+		
+			$this->logger->debug('Testing a complex route matching.');
+		
+			$route = new Route('settings/?:ref', array(), array());
+			$route->matchWith('settings/?msg');
+			$this->assertTrue($route->isMatched());
+		
+		}		
 	}

@@ -11,9 +11,13 @@
 		private $conditions;
 
 		public function __construct($route, $target = array(), $conditions = array()) {
-			$this->route = $route;
+			$this->route = $this->prepareRoute($route);
 			$this->target = $target;
 			$this->conditions = $conditions;
+		}
+		
+		private function prepareRoute($route) {
+			return str_replace('?', '\?', $route);
 		}
 
 		public function isMatched() {
@@ -21,10 +25,10 @@
 		}
 
 		public function matchWith($path) {
-			
+					
 			$parameterNames = array();
 			preg_match_all('@:([\w]+)@', $this->route, $parameterNames, PREG_PATTERN_ORDER);
-
+			
 			$regex = preg_replace_callback('@:[\w]+@', array($this, 'regex'), $this->route);
 			$regex .= '/?';
 	
