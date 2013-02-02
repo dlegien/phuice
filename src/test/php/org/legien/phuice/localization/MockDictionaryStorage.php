@@ -24,7 +24,7 @@
 		}
 		
 		private function getEntryFor($string) {
-			return $this->getDictionary()[$string];
+			return $this->_dictionary[$string];
 		}
 		
 		public function findTranslationByPlaceholder($string) {
