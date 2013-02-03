@@ -7,10 +7,7 @@
 		protected $variables;
 
 		public function assign($name, $value) {
-			if($this->variableExists($name)) {
-				
-			}
-			else {
+			if(!$this->variableExists($name)) {
 				$this->variables[$name] = $value;
 			}
 		}
