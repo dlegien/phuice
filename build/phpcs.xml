@@ -16,9 +16,9 @@
     <rule ref="Generic.Files.LineEndings"/>
 
     <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
-    <rule ref="Generic.Formatting.NoSpaceAfterCast"/>
+<!--    <rule ref="Generic.Formatting.NoSpaceAfterCast"/> -->
 
-    <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
+    <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchieSniff"/>
     <rule ref="PEAR.Functions.ValidDefaultValue"/>
 
     <rule ref="Generic.NamingConventions.ConstructorName"/>
