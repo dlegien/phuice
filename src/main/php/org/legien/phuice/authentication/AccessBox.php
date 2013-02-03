@@ -2,12 +2,6 @@
 
 	namespace org\legien\phuice\authentication;
 	
-	/**
-	 * Collects access information.
-	 * 
-	 * @author Daniel Legien
-	 *
-	 */
 	class AccessBox {
 		
 		/**
@@ -27,7 +21,7 @@
 		 * 
 		 * @param array $access The access information
 		 */
-		public function __construct($access = array()) {			
+		public function __construct($access = array()) {
 			if(is_array($access)) {
 				$this->setAccess($access);
 				$this->addKeys($access);

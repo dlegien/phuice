@@ -1,9 +1,9 @@
 <?php
 
 	namespace org\legien\phuice\localization;
-	
+
 	interface Translator {
-		
+
 		/**
 		 * Translates the given string using a dictionary.
 		 * 
