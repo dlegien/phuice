@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.legien.phuice</groupId>
-  <artifactId>phoenix</artifactId>
+  <artifactId>phuice</artifactId>
   <name>phuice</name>
   <version>1</version>
   <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>tests</testSourceDirectory>
+    <sourceDirectory>src/main</sourceDirectory>
+    <testSourceDirectory>src/test</testSourceDirectory>
   </build>
   <properties>
      <sonar.language>php</sonar.language>
