@@ -16,10 +16,6 @@
 			$this->_filename = $filename;
 		}
 
-		private function setLayout($layout) {
-			$this->_layout = $layout;
-		}
-
 		public function setContent($content) {
 			$this->_content = $content;
 		}

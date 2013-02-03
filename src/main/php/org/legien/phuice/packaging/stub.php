@@ -1,6 +1,6 @@
 <?php
 
-	include_once('main/php/org/legien/phuice/Classloader.php');
+	require_once('main/php/org/legien/phuice/Classloader.php');
 
 	$loader = org\legien\phuice\Classloader::getInstance();
 	$loader->addLoaders(array(

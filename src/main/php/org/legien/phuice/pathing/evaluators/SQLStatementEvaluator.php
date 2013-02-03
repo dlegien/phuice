@@ -267,8 +267,8 @@
 			
 			return
 				'INSERT INTO '. $TABLES .
-				' (' . $FIELDS . ') ' .
-				'VALUES (' . $VALUES . ')'
+				' (' . $FIELDS . ') 
+				VALUES (' . $VALUES . ')'
 			;				
 		}
 		

@@ -16,13 +16,13 @@
 		private $_sets = array();
 		private $_groupby = array();
 		
-		static $LEFT_JOIN = 0;
-		static $RIGHT_JOIN = 1;
-		static $CROSS_JOIN = 2;
-		static $TYPE_SELECT = 0;
-		static $TYPE_INSERT = 1;
-		static $TYPE_UPDATE = 2;
-		static $TYPE_DELETE = 3;
+		public static $LEFT_JOIN = 0;
+		public static $RIGHT_JOIN = 1;
+		public static $CROSS_JOIN = 2;
+		public static $TYPE_SELECT = 0;
+		public static $TYPE_INSERT = 1;
+		public static $TYPE_UPDATE = 2;
+		public static $TYPE_DELETE = 3;
 		
 		public function hasDistinct()
 		{

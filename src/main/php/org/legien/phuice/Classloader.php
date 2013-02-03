@@ -32,7 +32,7 @@
 		}
 
 		protected function loader($className) {
-			foreach($this->_loaders as $name => $value) {
+			foreach($this->_loaders as $value) {
 				$filename = $value($className);
 				if(is_readable($filename)) {
 					include_once($filename);
