@@ -10,7 +10,7 @@
 
 			$c = new Contact(new Name('Daniel', 'Legien'), 'daniel@legien.org');
 			$this->assertEquals($c->getName()->getFirstname(), 'Daniel');
-
+			$this->assertEquals($c->getName()->getLastname(), 'Legien');
 		}
 
 	}
