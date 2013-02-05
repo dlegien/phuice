@@ -199,27 +199,28 @@
 					throw new \Exception('AbstractDBStorage find requires the provided ordering list to consist of StorageOrderings');
 				}
 			}
+						
+			return $this->performStatement($bind, $stmt, $set);
+		}
+
+		private function performStatement($bind, $stmt, $set) {
 
 			if(!$statement = $this->_connection->prepare($stmt))
 			{
 				throw new \Exception('Couldn\'t prepare statement.');
 			}
-						
-			if(count($bind) > 0)
-			{
-				if(!$statement->execute($bind))
-				{
-					try{
+
+			if(count($bind) > 0) {
+				if(!$statement->execute($bind)) {
+					try {
 						$this->_connection->catchError($stmt);
 					}
-					catch(\Exception $e)
-					{
+					catch(\Exception $e) {
 						throw new \Exception('AbstractDBStorage.create: ' . $e->getMessage() . '. Couldn\'t execute statement '.$stmt.' with ' . implode(', ',$bind));
 					}					
 				}
 			}
-			else
-			{
+			else {
 				if(!$statement->execute())
 				{
 					try{
