@@ -6,7 +6,6 @@
 	
 	class CommandlineRouter extends DefaultRouter
 	{
-		private $directory;
 		const CLI_ARGUMENT_SEPARATOR = '-';
 		const BASE_SEPARATOR = '/';
 		const QUERY_STRING_SEPARATOR = '?';

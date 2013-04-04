@@ -2,8 +2,10 @@
 
 	namespace org\legien\phuice\authentication;
 
-	interface Authenticator {
-
-//		public function authenticate($username, $password, $redirect);
+	/**
+	 * Class used for type hinting
+	 */
+	interface Authenticator 
+	{
 
 	}

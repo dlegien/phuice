@@ -38,11 +38,6 @@
 		{
 			return $this->_sessionManager;
 		}
-		
-		private function getHashWrapper() 
-		{
-			return $this->_hashWrapper;
-		}
 
 		public function isAuthenticated()
 		{
