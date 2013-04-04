@@ -4,6 +4,6 @@
 
 	interface Authenticator {
 
-		public function authenticate($username, $password, $redirect);
+//		public function authenticate($username, $password, $redirect);
 
 	}

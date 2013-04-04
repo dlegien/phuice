@@ -10,7 +10,7 @@
 
 		public function __construct($timeout) {
 			if(!isset($_SESSION)) {
-				session_start();
+				@session_start();
 			}
 			$this->setTimeout($timeout);
 		}
@@ -28,7 +28,7 @@
 
 		public function destroySession() {
 			if(isset($_SESSION)) {
-				session_start();
+				@session_start();
 				session_destroy();
 			}
 		}
@@ -65,7 +65,7 @@
 		}
 
 		public function startSession($uid, $timestamp) {
-			session_start();
+			@session_start();
 			$this->setUid($uid);
 			$this->updateTimeout($timestamp + $this->_timeout);
 		}

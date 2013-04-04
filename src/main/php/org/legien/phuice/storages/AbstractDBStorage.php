@@ -263,7 +263,17 @@
 				throw new \Exception('AbstractDBStorage.findCustom(): Couldn\'t prepare statement');
 			}
 						
-			$statement->execute();	
+			if(!$statement->execute())
+			{
+				try
+				{
+					$this->_connection->catchError($stmt);
+				}
+				catch(\Exception $e)
+				{
+					throw new \Exception('AbstractDBStorage.create: ' . $e->getMessage() . '. Couldn\'t execute statement '.$stmt);	
+				}				
+			}
 
 			return $statement->fetchAll(\PDO::FETCH_CLASS, $this->_modelname);
 		}

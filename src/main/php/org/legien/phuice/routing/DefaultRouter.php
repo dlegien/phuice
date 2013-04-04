@@ -38,13 +38,20 @@
 			$pass = array(); 
 			foreach($method->getParameters() as $param) { 
           			/* @var $param ReflectionParameter */ 
-				if(isset($args[$param->getName()])) { 
-					$pass[] = $args[$param->getName()];
-				} 
-				else { 
-            				$pass[] = $param->getDefaultValue(); 
+          		try
+          		{
+					if(isset($args[$param->getName()])) { 
+						$pass[] = $args[$param->getName()];
+					} 
+					else { 
+    	        		$pass[] = $param->getDefaultValue(); 
+					}          			
+          		}
+				catch(\Exception $e)
+				{
+					var_dump($param);
 				}
-			} 
+			}
 			return $method->invokeArgs($clazz, $pass);
 		} 
 	}
