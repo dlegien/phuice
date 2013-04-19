@@ -18,26 +18,21 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	namespace org\legien\phuice\services\database;
+	namespace org\legien\phuice\pathing;
 	
 	/**
-	 * An exception that indicates that there was a database error that
-	 * prevented a query from being successfully executed.
-	 * 
+	 * Describes a group of Conditions that is linked using the OR keyword.
+	 *
 	 * @author 		Daniel Legien
-	 * @package		org.legien.phuice.services
-	 * @subpackage	database
-	 * 
-	 */
-	class PDOException extends \Exception
+	 * @package		org.legien.phuice
+	 * @subpackage	pathing
+	 *
+	 */	
+	class OrConditionGroup extends ConditionGroup
 	{
 		/**
-		 * Creates a new instance of this exception.
-		 * 
-		 * @param string $message	The exception message.
-		 */
-		public function __construct($message)
-		{
-			parent::__construct('PDOException: ' . $message);
-		}
+		 * The operation used to join the conditions together.
+		 * @var string
+		 */		
+		protected $joinOperation = 'OR';
 	}

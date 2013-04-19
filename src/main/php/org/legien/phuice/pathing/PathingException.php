@@ -18,26 +18,25 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	namespace org\legien\phuice\services\database;
+	namespace org\legien\phuice\pathing;
 	
 	/**
-	 * An exception that indicates that there was a database error that
-	 * prevented a query from being successfully executed.
+	 * An exception that indicates there was a problem during pathing.
 	 * 
 	 * @author 		Daniel Legien
-	 * @package		org.legien.phuice.services
-	 * @subpackage	database
-	 * 
+	 * @package		org.legien.phuice
+	 * @subpackage	pathing
+	 *
 	 */
-	class PDOException extends \Exception
+	class PathingException extends \Exception
 	{
 		/**
 		 * Creates a new instance of this exception.
 		 * 
-		 * @param string $message	The exception message.
+		 * @param unknown $message	The exception message.
 		 */
 		public function __construct($message)
 		{
-			parent::__construct('PDOException: ' . $message);
+			parent::__construct('PathingException: ' . $message);
 		}
 	}
