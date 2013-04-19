@@ -161,24 +161,32 @@
 		
 		private function processFilters(&$bind, &$stmt, $filters)
 		{		
+			$grp = new AndConditionGroup;
+					
+			foreach($filters as $filter)
+			{
+				if($filter instanceof StorageFilter)
+				{
+					$grp->set(new Condition($filter->getField(), $filter->getRelation(), ':'.$filter->getField(), FALSE));
+					$bind[':'.$filter->getField()] = $filter->getValue();
+				}
+			}
+
 			if(count($filters) > 0)
 			{
-				$grp = new AndConditionGroup;
-					
-				foreach($filters as $filter)
-				{
-					if($filter instanceof StorageFilter)
-					{
-						$grp->set(new Condition($filter->getField(), $filter->getRelation(), ':'.$filter->getField(), FALSE));
-						$bind[':'.$filter->getField()] = $filter->getValue();
-					}
-					else
-					{
-						throw new \Exception('AbstractDBStorage find requires the provided filter list to consist of StorageFilters');
-					}
-				}
 				$stmt->where($grp);
 			}			
+		}
+		
+		private function processOrderings(&$stmt, $orderBy)
+		{
+			foreach($orderBy as $order)
+			{
+				if($order instanceof StorageOrdering)
+				{
+					$stmt->orderby($order->getField(), $order->getDirection());
+				}
+			}
 		}
 		
 		protected function find(array $filters = array(), array $orderBy = array(), $set = FALSE)
@@ -190,20 +198,8 @@
 			;
 			
 			$bind = array();
-						
 			$this->processFilters($bind, $stmt, $filters);
-							
-			foreach($orderBy as $order)
-			{
-				if($order instanceof StorageOrdering)
-				{
-					$stmt->orderby($order->getField(), $order->getDirection());									
-				}
-				else
-				{
-					throw new \Exception('AbstractDBStorage find requires the provided ordering list to consist of StorageOrderings');
-				}
-			}
+			$this->processOrderings($stmt, $orderBy);
 						
 			return $this->performStatement($bind, $stmt, $set);
 		}
