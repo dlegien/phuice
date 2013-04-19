@@ -36,7 +36,7 @@
 		 * 
 		 * @var string
 		 */
-		private $_placeholder;
+		private $placeholder;
 		
 		/**
 		 * The language of the translation. For example de_DE or
@@ -44,14 +44,14 @@
 		 * 
 		 * @var string
 		 */
-		private $_language;
+		private $language;
 		
 		/**
 		 * The translation.
 		 * 
 		 * @var string
 		 */
-		private $_translation;
+		private $translation;
 
 		/**
 		 * Sets the placeholder.
@@ -60,7 +60,7 @@
 		 */
 		public function setPlaceholder($placeholder) 
 		{
-			$this->_placeholder = $placeholder;
+			$this->placeholder = $placeholder;
 		}
 
 		/**
@@ -70,7 +70,7 @@
 		 */
 		public function setLanguage($language) 
 		{
-			$this->_language = $language;
+			$this->language = $language;
 		}
 
 		/**
@@ -80,7 +80,7 @@
 		 */
 		public function setTranslation($translation) 
 		{
-			$this->_translation = $translation;
+			$this->translation = $translation;
 		}
 
 		/**
@@ -90,7 +90,7 @@
 		 */
 		public function getPlaceholder() 
 		{
-			return $this->_placeholder;
+			return $this->placeholder;
 		}
 
 		/**
@@ -100,7 +100,7 @@
 		 */
 		public function getLanguage() 
 		{
-			return $this->_language;
+			return $this->language;
 		}
 
 		/**
@@ -110,7 +110,7 @@
 		 */
 		public function getTranslation() 
 		{
-			return $this->_translation;
+			return $this->translation;
 		}
 
 		/**
