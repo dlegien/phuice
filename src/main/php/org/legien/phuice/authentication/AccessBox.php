@@ -20,16 +20,25 @@
 
 	namespace org\legien\phuice\authentication;
 	
-	class AccessBox {
-		
+	/**
+	 * A container for access information.
+	 * 
+	 * @author 	Daniel Legien
+	 * @package	org.legien.phuice
+	 * @subpackage	authentication
+	 */
+	class AccessBox 
+	{	
 		/**
 		 * The access information
+		 * 
 		 * @var array
 		 */
 		private $_access = array();
 		
 		/**
-		 * The saved keys
+		 * The saved keys.
+		 * 
 		 * @var array
 		 */
 		private $_keys = array();
@@ -37,39 +46,74 @@
 		/**
 		 * Creates a new AccessBox.
 		 * 
-		 * @param array $access The access information
+		 * @param array $access The access information.
 		 */
-		public function __construct($access = array()) {
-			if(is_array($access)) {
+		public function __construct($access = array()) 
+		{
+			if(is_array($access)) 
+			{
 				$this->setAccess($access);
 				$this->addKeys($access);
 			}
 		}
 		
-		private function setAccess($access) {
+		/**
+		 * Sets the access information.
+		 * @param array $access The access information.
+		 */
+		private function setAccess($access) 
+		{
 			$this->_access = $access;
 		}
 		
-		private function addKeys($access) {
-			foreach((array)$access as $acc) {
+		/**
+		 * Adds the keys.
+		 * @param unknown $access The keys.
+		 */
+		private function addKeys($access) 
+		{
+			foreach((array)$access as $acc) 
+			{
 				$this->addKey($acc->getAccessId());
 			}
 		}
 		
+		/**
+		 * Adds an access.
+		 * 
+		 * @param Access $access The access.
+		 */
 		public function addAccess($access) {
 			$this->_access[] = $access;
 			$this->addKey($access->getAccessId());
 		}
 		
-		private function addKey($id) {
+		/**
+		 * Adds a key.
+		 * @param string $id The key.
+		 */
+		private function addKey($id) 
+		{
 			$this->_keys[$id] = TRUE;
 		}
 		
-		public function getKeys() {
+		/**
+		 * Returns all keys.
+		 * @return array
+		 */
+		public function getKeys() 
+		{
 			return $this->_keys;
 		}
 		
-		public function isIn($id) {
+		/**
+		 * Returns whether the access box knows the specified
+		 * key.
+		 * @param string $id	The key.
+		 * @return boolean
+		 */
+		public function isIn($id) 
+		{
 			return array_key_exists($id, $this->getKeys());
 		}
 	}
