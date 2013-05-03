@@ -9,6 +9,12 @@
 					. str_replace('\\', '/', $className)
 					. '.php';
 				return $p;
+			},
+			'testing' => function($className) {
+				$p = 'test/php/'
+					. str_replace('\\', '/', $className)
+					. '.php';
+				return $p;
 			}
 		)
 	);
