@@ -34,6 +34,7 @@
 	{
 		/**
 		 * The transport.
+		 * 
 		 * @var Transport
 		 */
 		private $_transport;		

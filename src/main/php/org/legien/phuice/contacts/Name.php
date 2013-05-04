@@ -30,11 +30,15 @@
 	class Name 
 	{
 		/**
+		 * The first name.
+		 * 
 		 * @var	string
 		 */
 		private $_firstname;
 		
 		/**
+		 * The last name.
+		 * 
 		 * @var	string
 		 */
 		private $_lastname;

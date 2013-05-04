@@ -33,24 +33,28 @@
 	{
 		/**
 		 * The source address.
+		 * 
 		 * @var Contact
 		 */
 		private $_from;
 		
 		/**
 		 * The destination address.
+		 * 
 		 * @var Contact
 		 */
 		private $_to;
 		
 		/**
 		 * The message.
+		 * 
 		 * @var string
 		 */
 		private $_message;
 		
 		/**
 		 * The message encoding.
+		 * 
 		 * @var string
 		 */
 		private $_encoding;

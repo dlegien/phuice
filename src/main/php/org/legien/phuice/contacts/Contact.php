@@ -32,11 +32,15 @@
 	class Contact 
 	{
 		/**
+		 * The name of the contact.
+		 * 
 		 * @var	Name
 		 */
 		private $_name;
 		
 		/**
+		 * The email address of the contact.
+		 * 
 		 * @var	string
 		 */
 		private $_email;

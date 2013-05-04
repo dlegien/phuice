@@ -32,6 +32,7 @@
 	{
 		/**
 		 * The operation used to join the conditions together.
+		 * 
 		 * @var string
 		 */		
 		protected $joinOperation = 'OR';

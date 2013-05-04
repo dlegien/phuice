@@ -34,12 +34,14 @@
 	{
 		/**
 		 * The instance of the singleton.
+		 * 
 		 * @var Classloader
 		 */
 		private static $_instance = NULL;
 
 		/**
 		 * The registered loaders.
+		 * 
 		 * @var array
 		 */
 		protected $_loaders = array();

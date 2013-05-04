@@ -33,6 +33,7 @@
 	{
 		/**
 		 * The registered children.
+		 * 
 		 * @var array
 		 */
 		protected $children = array();

@@ -31,6 +31,8 @@
 	class Installer
 	{
 		/**
+		 * The strategy to apply when installing.
+		 * 
 		 * @var InstallerStrategy
 		 */
 		private $strategy;

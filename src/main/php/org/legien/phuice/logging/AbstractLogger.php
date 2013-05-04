@@ -35,6 +35,7 @@
 	{
 		/**
 		 * The class the logger logs for.
+		 * 
 		 * @var string
 		 */
 		private $clazz;

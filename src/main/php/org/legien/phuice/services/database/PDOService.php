@@ -36,12 +36,14 @@
 	{
 		/**
 		 * The database connection
+		 * 
 		 * @var \PDO
 		 */
 		private $_connection;
 		
 		/**
 		 * The evaluator for statements.
+		 * 
 		 * @var StatementEvaluator
 		 */
 		private $_evaluator;

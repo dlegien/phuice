@@ -33,26 +33,36 @@
 	abstract class AbstractInstaller
 	{
 		/**
+		 * The database connection.
+		 * 
 		 * @var PDOService
 		 */
 		private $service;
 		
 		/**
+		 * The folder containing the database patches
+		 * 
 		 * @var string
 		 */
 		private $patchFolder;
 		
 		/**
+		 * Whether an upgrade or downgrade will be performed.
+		 * 
 		 * @var boolean
 		 */
 		private $upgrade;
 		
 		/**
+		 * The target patch level.
+		 * 
 		 * @var	string
 		 */
 		private $targetPatchLevel;
 		
 		/**
+		 * The current patch level.
+		 * 
 		 * @var string
 		 */
 		private $currentPatchLevel;
