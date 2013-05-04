@@ -30,7 +30,7 @@
 	class AccessBox 
 	{	
 		/**
-		 * The access information
+		 * The access information.
 		 * 
 		 * @var array
 		 */

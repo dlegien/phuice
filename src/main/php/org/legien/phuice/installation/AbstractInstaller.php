@@ -40,7 +40,7 @@
 		private $service;
 		
 		/**
-		 * The folder containing the database patches
+		 * The folder containing the database patches.
 		 * 
 		 * @var string
 		 */

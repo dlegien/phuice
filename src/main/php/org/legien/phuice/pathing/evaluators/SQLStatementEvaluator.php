@@ -34,7 +34,7 @@
 	class SQLStatementEvaluator implements StatementEvaluator 
 	{
 		/**
-		 * Mappings for translating the joins
+		 * Mappings for translating the joins.
 		 * 
 		 * @var array
 		 */	
@@ -147,7 +147,7 @@
 		 * @param	integer	$joinType	The type of the join.
 		 * 
 		 * @return	integer
-		 * @throws	\Exception
+		 * @throws	\Exception If an unsupported join was encountered.
 		 */				
 		private function getJoin($joinType)
 		{
@@ -354,7 +354,7 @@
 		 * 									based on.
 		 * 
 		 * @return 	string
-		 * @throws	\Exception
+		 * @throws	\Exception If an unsupported statement type was encountered.
 		 */ 
 		public function evaluate(Statement $statement)
 		{

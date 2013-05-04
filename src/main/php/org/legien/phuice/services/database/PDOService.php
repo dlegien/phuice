@@ -35,7 +35,7 @@
 	class PDOService 
 	{
 		/**
-		 * The database connection
+		 * The database connection.
 		 * 
 		 * @var \PDO
 		 */
