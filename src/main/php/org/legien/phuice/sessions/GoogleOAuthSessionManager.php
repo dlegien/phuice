@@ -66,6 +66,7 @@
 		 */
 		public function destroySession()
 		{
+			$error = FALSE;
 			try 
 			{
 				require_once 'googleapi/Google_Client.php';
@@ -82,9 +83,9 @@
 			}
 			catch(\Exception $e)
 			{
-				// Invalid token
+				$error = TRUE;				
 			}
-					
+			
 			if(isset($_SESSION))
 			{
 				@session_start();
