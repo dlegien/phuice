@@ -130,7 +130,7 @@
 		 */
 		private function getStub() 
 		{
-			return $this->stub;
+			return $this->stubPath;
 		}
 
 		/**
