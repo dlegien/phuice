@@ -33,15 +33,31 @@
 	class CommandlineRouter extends DefaultRouter
 	{
 		/**
+		 * Indicator for command line arguments.
+		 * 
 		 * @var string
 		 */
 		const CLI_ARGUMENT_SEPARATOR = '-';
 		
 		/**
+		 * Separator for parts of a path.
+		 * 
 		 * @var string
 		 */
 		const BASE_SEPARATOR = '/';
+		
+		/**
+		 * The seperator for a query string.
+		 * 
+		 * @var string
+		 */
 		const QUERY_STRING_SEPARATOR = '?';
+		
+		/**
+		 * The separator for query string arguments.
+		 * 
+		 * @var string
+		 */
 		const QUERY_STRING_ARGUMENT_SEPARATOR = '&';
 		
 		/**
@@ -86,5 +102,4 @@
 		{
 			parent::route($this->convertPath($path));
 		}
-		
 	}

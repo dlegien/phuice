@@ -32,16 +32,28 @@
 	class DefaultRouter extends AbstractRouter 
 	{
 		/**
+		 * The directory where available services are registered.
+		 * 
 		 * @var ServiceDirectory
 		 */
 		private $directory;
 
+		/**
+		 * Creates a new DefaultRouter instance.
+		 * 
+		 * @param ServiceDirectory	$directory	The directory for service references.
+		 * @param RouteList 		$routes		The list of available routes.
+		 */
 		public function __construct(ServiceDirectory $directory, RouteList $routes = NULL) 
 		{
 			parent::__construct($routes);
 			$this->directory = $directory;
 		}
 
+		/**
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\routing\Router::route()
+		 */
 		public function route($path) 
 		{	
 			foreach($this->getRoutes() as $route) 
@@ -66,17 +78,28 @@
 			}
 		}
 
-		public function __callmethod($clazz, \ReflectionMethod $method, array $args = array()) 
+		/**
+		 * Calls a method of a class. 
+		 * 
+		 * @param object 			$object	The instance of the class to call the method on.
+		 * @param \ReflectionMethod $method	The method of the class to call.
+		 * @param array 			$args	The arguments the method should be called with.
+		 * 
+		 * @return mixed
+		 */
+		private function __callmethod($object, \ReflectionMethod $method, array $args = array()) 
 		{ 
 			$pass = array(); 
-			foreach($method->getParameters() as $param) { 
-          			/* @var $param ReflectionParameter */ 
+			foreach($method->getParameters() as $param) 
+			{
           		try
           		{
-					if(isset($args[$param->getName()])) { 
+					if(isset($args[$param->getName()])) 
+					{ 
 						$pass[] = $args[$param->getName()];
 					} 
-					else { 
+					else 
+					{ 
     	        		$pass[] = $param->getDefaultValue(); 
 					}          			
           		}
@@ -85,6 +108,6 @@
 					var_dump($param);
 				}
 			}
-			return $method->invokeArgs($clazz, $pass);
+			return $method->invokeArgs($object, $pass);
 		} 
 	}
