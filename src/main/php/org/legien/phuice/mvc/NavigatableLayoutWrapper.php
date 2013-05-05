@@ -14,7 +14,7 @@
 	 * @subpackage	mvc
 	 *
 	 */
-	class LocalizedNavigatableLayoutWrapper extends LayoutWrapper 
+	class NavigatableLayoutWrapper extends LayoutWrapper 
 	{
 		/**
 		 * The storage for menu items.
