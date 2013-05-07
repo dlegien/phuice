@@ -20,6 +20,9 @@
 	
 	namespace org\legien\phuice\services\database;
 
+	use org\legien\phuice\pathing\evaluators\StatementEvaluator;
+	use org\legien\phuice\pathing\Statement;	
+	
 	/**
 	 * Interface for PDOServices. Mainly used for unit testing as this allows to
 	 * mock away the database connection.
