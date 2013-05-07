@@ -2,11 +2,19 @@
 
 	namespace org\legien\phuice\services\database;
 	
-	class PDOServiceMock implements IPDOService
+	use org\legien\phuice\pathing\evaluators\StatementEvaluator;
+	use org\legien\phuice\pathing\Statement;
+	use org\legien\phuice\testing\AbstractMock;
+	
+	class PDOServiceMock extends AbstractMock implements IPDOService
 	{
-		public function __construct()
+		private $statement;
+		private $calls;
+		
+		public function __construct($return)
 		{
-			
+			$this->calls = array();			
+			$this->statement = new StatementFake($this, $return);
 		}
 		
 		/**
@@ -17,8 +25,8 @@
 		 */
 		public function prepare(Statement $statement)
 		{
-			var_dump('prepare');
-			var_dump($statement);
+			$this->registerCall('PDOServiceMock', 'prepare', array($statement));			
+			return $this->statement;
 		}
 		
 		/**
@@ -29,8 +37,7 @@
 		*/
 		public function query(Statement $statement)
 		{
-			var_dump('query');
-			var_dump($statement);
+			$this->registerCall('PDOServiceMock', 'query', array($statement));
 		}
 		
 		/**
@@ -41,8 +48,7 @@
 		*/
 		public function catchError(Statement $statement)
 		{
-			var_dump('catchError');
-			var_dump($statement);
+			$this->registerCall('PDOServiceMock', 'catchError', array($statement));
 		}
 		
 		/**
@@ -52,7 +58,7 @@
 		*/
 		public function lastInsertId()
 		{
-			var_dump('lastInsertId');
+			$this->registerCall('PDOServiceMock', 'lastInsertId', array());
 		}
 		
 		/**
@@ -64,10 +70,7 @@
 		*/
 		public function bindValue($name, $value, $type)
 		{
-			var_dump('bindValue');
-			var_dump($name);
-			var_dump($value);
-			var_dump($type);
+			$this->registerCall('PDOServiceMock', 'bindValue', array($name, $value, $type));
 		}
 		
 		/**
@@ -76,6 +79,6 @@
 		*/
 		public function getEvaluator()
 		{
-			var_dump('getEvaluator');
-		}		
+			$this->registerCall('PDOServiceMock', 'getEvaluator', array());
+		}	
 	}
