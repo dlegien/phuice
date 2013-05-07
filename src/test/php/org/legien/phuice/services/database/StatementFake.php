@@ -20,8 +20,13 @@
 		
 		public function fetchObject()
 		{
-			$this->service->registerCall('StatementFake', 'fetchObject', array());
-			
+			$this->service->registerCall('StatementFake', 'fetchObject', array());	
+			return $this->return;
+		}
+		
+		public function fetchAll()
+		{
+			$this->service->registerCall('StatementFake', 'fetchAll', array());
 			return $this->return;
 		}
 	}
