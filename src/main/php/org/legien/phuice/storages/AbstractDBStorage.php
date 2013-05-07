@@ -20,7 +20,7 @@
 
 	namespace org\legien\phuice\storages;
 
-	use org\legien\phuice\services\database\PDOService;
+	use org\legien\phuice\services\database\IPDOService;
 	use org\legien\phuice\pathing\Statement;
 	use org\legien\phuice\pathing\Condition;
 	use org\legien\phuice\pathing\AndConditionGroup;
@@ -74,7 +74,7 @@
 		 * @param string		$table		The table holding the entities.
 		 * @param string		$model		The name of the model class.
 		 */
-		public function __construct(PDOService $connection, $table, $model) 
+		public function __construct(IPDOService $connection, $table, $model) 
 		{
 			$this->setConnection($connection);
 			$this->setTable($table);
@@ -106,7 +106,7 @@
 		 * 
 		 * @param PDOService $connection The database connection.
 		 */
-		private function setConnection(PDOService $connection) 
+		private function setConnection(IPDOService $connection) 
 		{
 			$this->_connection = $connection;
 		}

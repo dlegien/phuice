@@ -32,7 +32,7 @@
 	 * @subpackage	database
 	 *
 	 */
-	class PDOService 
+	class PDOService implements IPDOService
 	{
 		/**
 		 * The database connection.
