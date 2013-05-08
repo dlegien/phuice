@@ -20,7 +20,7 @@
 
 	namespace org\legien\phuice\mvc;
 
-	use org\legien\phuice\mvc\ViewWrapper;
+	use org\legien\phuice\mvc\IViewWrapper;
 	use org\legien\phuice\authentication\WebAuthenticator;
 
 	/**
@@ -50,7 +50,7 @@
 		 * @param WebAuthenticator	$authenticator	The authenticator.
 		 * @param ViewWrapper		$view			The view.
 		 */
-		public function __construct(WebAuthenticator $authenticator, ViewWrapper $view) 
+		public function __construct(WebAuthenticator $authenticator, IViewWrapper $view) 
 		{
 			parent::__construct($view);
 			$this->setAuthenticator($authenticator);
@@ -62,7 +62,8 @@
 		 * 
 		 * @param WebAuthenticator $authenticator The authenticator.
 		 */
-		private function setAuthenticator(WebAuthenticator $authenticator) {
+		private function setAuthenticator(WebAuthenticator $authenticator) 
+		{
 			$this->_authenticator = $authenticator;
 		}
 

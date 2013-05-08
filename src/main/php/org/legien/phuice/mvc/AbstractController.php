@@ -20,7 +20,7 @@
 
 	namespace org\legien\phuice\mvc;
 
-	use org\legien\phuice\mvc\ViewWrapper;
+	use org\legien\phuice\mvc\IViewWrapper;
 
 	/**
 	 * An abstract controller that offers handling of views.
@@ -35,16 +35,16 @@
 		/**
 		 * The view.
 		 * 
-		 * @var ViewWrapper
+		 * @var IViewWrapper
 		 */
 		protected $view;
 
 		/**
 		 * Initializes the controller.
 		 * 
-		 * @param ViewWrapper $view The view.
+		 * @param IViewWrapper $view The view.
 		 */
-		public function __construct(ViewWrapper $view) 
+		public function __construct(IViewWrapper $view) 
 		{
 			$this->view = $view;
 		}

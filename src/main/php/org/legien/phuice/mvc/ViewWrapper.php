@@ -29,7 +29,7 @@
 	 * @subpackage	mvc
 	 *
 	 */
-	class ViewWrapper 
+	class ViewWrapper implements IViewWrapper
 	{
 		/**
 		 * The name of the view file.
@@ -41,7 +41,7 @@
 		/**
 		 * The LayoutWrapper of the view.
 		 * 
-		 * @var LayoutWrapper
+		 * @var ILayoutWrapper
 		 */
 		private $_layout;
 
@@ -51,7 +51,7 @@
 		 * @param string		$filename	The name of the view file.
 		 * @param LayoutWrapper	$layout		The layout of the view.
 		 */
-		public function __construct($filename, LayoutWrapper $layout = NULL) 
+		public function __construct($filename, ILayoutWrapper $layout = NULL) 
 		{
 			$this->setFilename($filename);
 			$this->setLayout($layout);
@@ -69,26 +69,38 @@
 		/**
 		 * Sets the layout of the view.
 		 * 
-		 * @param LayoutWrapper $layout	The layout.
+		 * @param ILayoutWrapper $layout	The layout.
 		 */
-		private function setLayout($layout) 
+		private function setLayout(ILayoutWrapper $layout) 
 		{
 			$this->_layout = $layout;
 		}
 
 		/**
-		 * Magic getter method that returns an empty string for
-		 * undefined variables
-		 * 
-		 * TODO: Review
-		 * 
-		 * @param string	$name	The name of the variable.
-		 * 
-		 * @return string
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\mvc\IViewWrapper::__set()
 		 */
-		public function __get($name) 
+		public function __set($name, $value)
 		{
-			return '';
+			$this->vars[$name] = $value;
+		}
+		
+		/**
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\mvc\IViewWrapper::__get()
+		 */
+		public function __get($name)
+		{
+			return $this->vars[$name];
+		}
+		
+		/**
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\mvc\IViewWrapper::__isset()
+		 */
+		public function __isset($name)
+		{
+			return isset($this->vars[$name]);
 		}
 
 		/**
@@ -153,7 +165,7 @@
 		/**
 		 * Returns the layout of the view.
 		 * 
-		 * @return LayoutWrapper
+		 * @return ILayoutWrapper
 		 */
 		public function getLayout() 
 		{

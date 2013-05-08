@@ -28,7 +28,7 @@
 	 * @subpackage	mvc
 	 *
 	 */
-	class LayoutWrapper 
+	class LayoutWrapper implements ILayoutWrapper
 	{
 		/**
 		 * The variables of the layout.
@@ -72,9 +72,8 @@
 		}
 
 		/**
-		 * Sets the content of the layout.
-		 * 
-		 * @param string $content	The content.
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\mvc\ILayoutWrapper::setContent()
 		 */
 		public function setContent($content) 
 		{
@@ -82,8 +81,8 @@
 		}
 
 		/**
-		 * Renders the layout by including the layout file.
-		 * 
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\mvc\ILayoutWrapper::render()
 		 */
 		public function render() 
 		{
@@ -117,11 +116,8 @@
 		}
 		
 		/**
-		 * Magic setter method used to add variables to the layout.
-		 * The variables are registered internally.
-		 * 
-		 * @param string	$name	The name of the variable.
-		 * @param mixed		$value	The value of the variable.
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\mvc\ILayoutWrapper::__set()
 		 */
 		public function __set($name, $value) 
 		{
@@ -129,12 +125,8 @@
 		}
 		
 		/**
-		 * Magic getter to return the layout variables. Retrieves
-		 * the values from the internal storage.
-		 * 
-		 * @param string	$name	The name of the variable.
-		 * 
-		 * @return mixed
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\mvc\ILayoutWrapper::__get()
 		 */
 		public function __get($name) 
 		{
@@ -142,10 +134,8 @@
 		}
 		
 		/**
-		 * Magic method to determine if the given variable has been
-		 * registered for the layout.
-		 * 
-		 * @param string	$name	The name of the variable.	
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\mvc\ILayoutWrapper::__isset()
 		 */
 		public function __isset($name) 
 		{
