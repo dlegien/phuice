@@ -91,11 +91,10 @@
 				$nameparts = explode('_', $table->getName());
 				$name = implode('', array_map('ucfirst', $nameparts));
 				
-				
 				$fullQualifiedName = explode('\\', $this->GetRootNamespace() . '\\' . $name);
 				$classname = implode('\\', array_slice($fullQualifiedName, -1));
 				$namespace = implode('\\', array_slice($fullQualifiedName, 0, -1));
-				$fqnString = implode('/', $fullQualifiedName);
+				//$fqnString = implode('/', $fullQualifiedName);
 			
 				$columns = $sgw->findTableColumns($table);
 				$indexes = $sgw->findTableIndexes($table);

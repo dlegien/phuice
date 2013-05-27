@@ -114,11 +114,11 @@
 		}
 		
 		/**
-		 *
+		 * Statement to retrieve the database tables.
 		 *
 		 * @param	string	$pattern	If present, indicates which table names to match
 		 * @return	Statement
-		 * @throws	\Exception
+		 * @throws	\Exception If the method is called more than once.
 		 */
 		public function showTables($pattern = false)
 		{
@@ -132,11 +132,12 @@
 		}
 		
 		/**
+		 * Statement to retrieve table columns.
 		 *
 		 * @param	string	$where	The table used for the update statement.
 		 *
 		 * @return	Statement
-		 * @throws	\Exception
+		 * @throws	\Exception If the method is called more than once.
 		 */
 		public function showTableColumns($table)
 		{
@@ -150,11 +151,12 @@
 		}
 		
 		/**
+		 * Statement to retrieve table indexes.
 		 *
 		 * @param	string	$where	The table used for the update statement.
 		 *
 		 * @return	Statement
-		 * @throws	\Exception
+		 * @throws	\Exception If the method is called more than once.
 		 */
 		public function showTableIndexes($table)
 		{

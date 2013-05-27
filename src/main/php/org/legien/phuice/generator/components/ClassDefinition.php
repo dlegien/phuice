@@ -21,7 +21,7 @@
 		private $name;
 		
 		/**
-		 * The namespace of the class
+		 * The namespace of the class.
 		 *
 		 * @var	string
 		 */

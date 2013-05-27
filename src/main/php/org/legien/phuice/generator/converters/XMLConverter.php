@@ -58,7 +58,6 @@
 				->setDescription(str_replace('\n', "\n", $class['description']))
 			;
 			
-			
 			if ($class['extends']) {
 				$classDef->setExtends(array($class['extends']));
 			}

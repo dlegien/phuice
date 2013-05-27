@@ -134,11 +134,7 @@ return $return;
 			
 		}
 		
-		/**
-		 * Composes constructor.
-		 * 
-		 * @return	string
-		 */
+		/*
 		private function composeConstructor()
 		{
 			return new Method(
@@ -152,6 +148,7 @@ return $return;
 				'public'
 				);
 		}
+		*/
 		
 		/**
 		 * Returns the model definition with the given name.

@@ -23,7 +23,8 @@
 		protected $name;
 
 		/**
-		 * 0 if the index cannot contain duplicates, 1 if it can.
+		 * This field is 0 if the index cannot contain 
+		 * duplicates, 1 if it can.
 		 * 
 		 * @var boolean		
 		 */

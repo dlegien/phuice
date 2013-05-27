@@ -41,7 +41,10 @@
 		 * @return	string	announcement line
 		 */		
 		public function generateDocBlockAnnouncement($name, $value) {
-			if ($value == '') return $value;
+			if ($value == '') 
+			{
+				return $value;
+			}
 			
 			$args = func_get_args();
 			array_unshift($args, "\t");

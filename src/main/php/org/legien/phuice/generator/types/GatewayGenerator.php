@@ -202,7 +202,7 @@
 				
 				$class->setMethod(
 					$this->$composeMethod(
-						$gatewayName,
+						//$gatewayName,
 						$index->getName(),
 						$parameters,
 						$modelClass->getFullQualifiedName()
@@ -265,14 +265,13 @@
 		 * Composes a find by method for the gateway that returns the specified model
 		 * with the given return type and requires the provided list of parameters.
 		 * 
-		 * @param	string	$gatewayName	The name of the gateway.
 		 * @param	string	$name			The name of the model.
 		 * @param	array 	$parameters		The list of parameters.
 		 * @param	string	$returnType		The returntype of the method.
 		 * 
 		 * @return	Method
 		 */
-		public function composeFindByMethod($gatewayName, $name, $parameters, $returnType)
+		public function composeFindByMethod($name, $parameters, $returnType)
 		{
 			return new Method(
 				'findBy' . ucfirst($name), 
@@ -293,14 +292,13 @@
 		 * Composes a find by method for the gateway that returns the specified model
 		 * with the given return type and requires the provided list of parameters.
 		 * 
-		 * @param	string	$gatewayName	The name of the gateway.
 		 * @param	string	$name			The name of the model.
 		 * @param	array 	$parameters		The list of parameters.
 		 * @param	string	$returnType		The returntype of the method.
 		 * 
 		 * @return	Method
 		 */
-		public function composeFindAllByMethod($gatewayName, $name, $parameters, $returnType)
+		public function composeFindAllByMethod($name, $parameters, $returnType)
 		{
 			return new Method(
 				'findAllBy' . ucfirst($name), 
@@ -336,7 +334,7 @@
 		 * @param	string	$name	The name of the class.
 		 * 
 		 * @return	ClassDefinition
-		 * @throws	InvalidArgumentException
+		 * @throws	InvalidArgumentException If no class definition exists for the given name.
 		 */		
 		public function getClass($name)
 		{
