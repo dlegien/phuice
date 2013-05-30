@@ -30,5 +30,8 @@ use org\legien\phuice\generator\components\Field;
 			$this->assertEquals(' = 2', $field->getDefaultValue());
 			$field->setDefaultValue('a0512');
 			$this->assertEquals(" = 'a0512'", $field->getDefaultValue());
+			
+			$field->setDefaultValue(NULL);
+			$this->assertNull($field->getDefaultValue());
 		}
 	}

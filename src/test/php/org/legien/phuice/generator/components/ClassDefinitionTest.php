@@ -23,6 +23,9 @@ use org\legien\phuice\generator\components\Dependency;
 			
 			$this->assertEquals('namespace2\\name2', $class->getFullQualifiedName());
 			
+			$class->setNamespace('');
+			$this->assertEquals('name2', $class->getFullQualifiedName());
+			
 			$class->setDescription('Description');
 			$this->assertEquals('Description', $class->getDescription());
 			
