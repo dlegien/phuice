@@ -54,4 +54,17 @@
 			
 			$this->assertTrue($this->serviceDirectory->getService('mock')->gotCalled());
 		}
+		
+		/**
+		 * Tests the routing from commandline parameters and arguments.
+		 */
+		public function testRoutingWithArguments()
+		{
+			$router = new CommandlineRouter($this->serviceDirectory);
+			$router->addRoute(new Route(':controller/:method?:id'));
+				
+			$router->route(array('mock', 'call', '-2'));
+				
+			$this->assertTrue($this->serviceDirectory->getService('mock')->gotCalled());
+		}		
 	}
