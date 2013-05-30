@@ -19,60 +19,25 @@
 	 */
 
 	namespace org\legien\phuice\routing;
-
+	
 	/**
-	 * The MockCallTarget accepts calls and reports if it was called.
+	 * An Exception indicating that the processing by the router
+	 * failed
 	 * 
 	 * @author		Daniel Legien
 	 * @package		org.legien.phuice
 	 * @subpackage	routing
 	 *
 	 */
-	class MockCallTarget 
+	class RoutingException extends \Exception
 	{
 		/**
-		 * Whether the target was called.
-		 * 
-		 * @var boolean
-		 */
-		private $gotCalled;
-
-		/**
 		 * Constructor.
-		 */
-		public function __construct() 
-		{
-			$this->gotCalled = FALSE;
-		}
-
-		/**
-		 * Calls the target.
 		 * 
-		 * @param mixed $parameter A parameter of the call.
+		 * @param string $message The message.
 		 */
-		public function call($id) 
+		public function __construct($message)
 		{
-			if($id == 2) 
-			{
-				$this->gotCalled = TRUE;
-			}
-		}
-		
-		public function withdefault($id, $bla = 3)
-		{
-			if($id == 2 && $bla == 3)
-			{
-				$this->gotCalled = TRUE;
-			}
-		}
-
-		/**
-		 * Returns whether the target was called.
-		 * 
-		 * @return boolean
-		 */
-		public function gotCalled() 
-		{
-			return $this->gotCalled;
+			parent::__construct('RoutingException: ' . $message);
 		}
 	}

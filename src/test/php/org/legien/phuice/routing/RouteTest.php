@@ -70,6 +70,9 @@
 		}
 		
 		/**
+		 * Tests whether retrieving parameters from an unmatched and unprocessed
+		 * route throws the expected exception.
+		 * 
 		 * @expectedException org\legien\phuice\routing\RouteException
 		 */		
 		public function testGetParametersFromUnprocessedAndUnmatchedRoute()
@@ -90,6 +93,9 @@
 			$this->assertEquals('def', $parameters['abc']);
 		}
 		
+		/**
+		 * Tests the integration of targets into the parameters.
+		 */
 		public function testTargets()
 		{
 			$route = new Route('test/', array('bla' => 'blubb'));

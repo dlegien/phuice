@@ -72,7 +72,7 @@
 					}
 					else 
 					{
-						throw new \Exception('404');
+						throw new RoutingException('The called method does not exist.');
 					}
 				}
 			}
@@ -92,20 +92,13 @@
 			$pass = array(); 
 			foreach($method->getParameters() as $param) 
 			{
-          		try
-          		{
-					if(isset($args[$param->getName()])) 
-					{ 
-						$pass[] = $args[$param->getName()];
-					} 
-					else 
-					{ 
-    	        		$pass[] = $param->getDefaultValue(); 
-					}          			
-          		}
-				catch(\Exception $e)
-				{
-					var_dump($param);
+				if(isset($args[$param->getName()])) 
+				{ 
+					$pass[] = $args[$param->getName()];
+				} 
+				else 
+				{ 
+					$pass[] = $param->getDefaultValue(); 
 				}
 			}
 			return $method->invokeArgs($object, $pass);

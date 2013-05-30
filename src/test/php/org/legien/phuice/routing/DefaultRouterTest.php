@@ -86,4 +86,32 @@
 
 			$this->assertEquals(1, $routecount2);
 		}
+		
+		/**
+		 * Tests whether calling on an non-existing method throws the
+		 * expected exception.
+		 * 
+		 * @expectedException org\legien\phuice\routing\RoutingException
+		 */		
+		public function testRoutingToNonExistentMethod()
+		{
+			$routeList = new RouteList();
+			$routeList->add(new Route(':controller/:method/:id'));
+			$router = new DefaultRouter($this->serviceDirectory, $routeList);
+			$router->route('mock/doesntexist/4');			
+		}
+		
+		/**
+		 * Tests whether calling a method with a default parameter without
+		 * it can be performed properly.
+		 */
+		public function testCallingMethodWithDefaultValue()
+		{
+			$routeList = new RouteList();
+			$routeList->add(new Route(':controller/:method/:id'));
+			$router = new DefaultRouter($this->serviceDirectory, $routeList);
+			$router->route('mock/withdefault/2');
+			
+			$this->assertTrue($this->serviceDirectory->getService('mock')->gotCalled());
+		}
 	}
