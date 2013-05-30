@@ -200,18 +200,12 @@
 			{
 				return $this->parameters;
 			} 
-			elseif($this->isProcessed()) 
-			{
-				throw new \Exception('Route did not match.');
-			} 
-			else 
-			{
-				throw new \Exception('Has to be matched before retrieving parameters.');
-			}
+			throw new RouteException('Has to be processed and matched before retrieving parameters.');
 		}
 
 		/**
-		 * Returns the parameter with the given name.
+		 * Returns the parameter with the given name or null if the parameter
+		 * is not set.
 		 * 
 		 * @param	string	$name	The name of the parameter.
 		 * 
@@ -223,6 +217,7 @@
 			{
 				return $this->parameters[$name];
 			}
+			return NULL;
 		}	
 
 		/**
