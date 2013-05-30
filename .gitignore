@@ -1,7 +1,4 @@
 target/
-.project
 build/logs
 build/backup
-.settings
-.buildpath
-phpunit/
+.DS_Store

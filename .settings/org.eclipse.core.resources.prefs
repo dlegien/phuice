@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//src/main/php/org/legien/phuice/generator/AbstractGenerator.php=UTF-8
+encoding//src/main/php/org/legien/phuice/generator/documentation/DocumentationGeneratorInterface.php=UTF-8
+encoding//src/main/php/org/legien/phuice/generator/documentation/PHPDocumentationGenerator.php=UTF-8
+encoding//src/main/php/org/legien/phuice/generator/types/GatewayGenerator.php=UTF-8
+encoding//src/main/php/org/legien/phuice/generator/types/ModelGenerator.php=UTF-8
+encoding//src/main/php/org/legien/phuice/structures/Column.php=UTF-8
+encoding//src/main/php/org/legien/phuice/structures/Index.php=UTF-8
+encoding//src/main/php/org/legien/phuice/structures/StructureGateway.php=UTF-8
+encoding//src/main/php/org/legien/phuice/structures/StructureGatewayInterface.php=UTF-8
+encoding//src/main/php/org/legien/phuice/structures/Table.php=UTF-8
