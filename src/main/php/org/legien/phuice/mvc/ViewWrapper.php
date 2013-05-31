@@ -39,6 +39,13 @@
 		private $_filename;
 		
 		/**
+		 * The template variables.
+		 * 
+		 * @var array
+		 */
+		private $vars;
+		
+		/**
 		 * The LayoutWrapper of the view.
 		 * 
 		 * @var ILayoutWrapper
@@ -55,6 +62,7 @@
 		{
 			$this->setFilename($filename);
 			$this->setLayout($layout);
+			$this->vars = array();
 		}
 
 		/**
@@ -91,7 +99,11 @@
 		 */
 		public function __get($name)
 		{
-			return $this->vars[$name];
+			if(isset($this->vars[$name]))
+			{
+				return $this->vars[$name];
+			}
+			return NULL;
 		}
 		
 		/**
