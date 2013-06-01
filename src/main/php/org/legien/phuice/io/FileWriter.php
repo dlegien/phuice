@@ -18,35 +18,47 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	namespace org\legien\phuice\generator\types;
+	namespace org\legien\phuice\io;
 	
+	use org\legien\phuice\io\IWriter;
+
 	/**
-	 * A generator for standard code for models.
+	 * A writer capable of writing to a file resource.
 	 * 
 	 * @author		Daniel Legien
-	 * @package		org.legien.phuice.generator
-	 * @subpackage	types
+	 * @package		org.legien.phuice
+	 * @subpackage	io
 	 *
 	 */
-	interface IModelGenerator extends ITypeGenerator
-	{	
+	class FileWriter implements IWriter
+	{
 		/**
-		 * Creates a class definition from the given parameters.
-		 * 
-		 * @param	string	$modelName	The name of the model.
-		 * @param	string	$namespace	The namespace of the model.
-		 * @param	array 	$fields		The fields of the model.
-		 * 
-		 * @return	ModelGenerator		this
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\io\IWriter::createPath()
 		 */
-		public function setClass($modelName, $namespace, $fields = array());
-		
+		public function createPath($path)
+		{
+			$packages = explode('/', $path);
+			$index = count($packages)-1;
+			unset($packages[$index]);
+			$folder = getcwd() . DIRECTORY_SEPARATOR;
+			foreach($packages as $package)
+			{
+				$folder .= $package;
+				if(!file_exists($folder))
+				{
+					mkdir($folder);
+				}
+				$folder .= DIRECTORY_SEPARATOR;
+			}
+		}
+
 		/**
-		 * Returns the model definition with the given name.
-		 * 
-		 * @param	string	$name	The name of the model.
-		 * 
-		 * @return	ClassDefinition  
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\io\IWriter::write()
 		 */
-		public function getClass($name);
+		public function write($resourceName, $content)
+		{
+			file_put_contents($resourceName, $content);
+		}
 	}

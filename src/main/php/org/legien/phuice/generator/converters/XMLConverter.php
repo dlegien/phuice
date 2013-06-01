@@ -28,15 +28,22 @@
 		 */	
 		public function convert($xml)
 		{
-			$sources = array();
-			$xml = new \SimpleXMLElement($xml);
-			
-			foreach($xml->class as $class)
+			try 
 			{
-				$sources[] = $this->convertClass($class);
+				$sources = array();
+				$xml = new \SimpleXMLElement($xml);
+					
+				foreach($xml->class as $class)
+				{
+					$sources[] = $this->convertClass($class);
+				}
+				
+				return $sources;				
 			}
-
-			return $sources;			
+			catch (\Exception $e)
+			{
+				throw new ConverterException($e->getMessage());
+			}
 		}
 
 		/**

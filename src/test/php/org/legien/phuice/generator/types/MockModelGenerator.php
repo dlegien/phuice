@@ -19,34 +19,43 @@
 	 */
 
 	namespace org\legien\phuice\generator\types;
-	
+
+	use org\legien\phuice\generator\types\IModelGenerator;
+
 	/**
-	 * A generator for standard code for models.
+	 * A model generator for testing.
 	 * 
 	 * @author		Daniel Legien
 	 * @package		org.legien.phuice.generator
 	 * @subpackage	types
 	 *
 	 */
-	interface IModelGenerator extends ITypeGenerator
-	{	
+	class MockModelGenerator implements IModelGenerator
+	{
 		/**
-		 * Creates a class definition from the given parameters.
-		 * 
-		 * @param	string	$modelName	The name of the model.
-		 * @param	string	$namespace	The namespace of the model.
-		 * @param	array 	$fields		The fields of the model.
-		 * 
-		 * @return	ModelGenerator		this
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\generator\types\IModelGenerator::setClass()
 		 */
-		public function setClass($modelName, $namespace, $fields = array());
+		public function setClass($modelName, $namespace, $fields = array())
+		{
+			echo __METHOD__ . PHP_EOL;
+		}
 		
 		/**
-		 * Returns the model definition with the given name.
-		 * 
-		 * @param	string	$name	The name of the model.
-		 * 
-		 * @return	ClassDefinition  
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\generator\types\IModelGenerator::getClass()
 		 */
-		public function getClass($name);
+		public function getClass($name)
+		{
+			echo __METHOD__ . PHP_EOL;
+		}
+		
+		/**
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\generator\types\ITypeGenerator::generate()
+		 */
+		public function generate($name)
+		{
+			echo __METHOD__ . PHP_EOL;			
+		}
 	}

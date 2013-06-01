@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classes>
+	<class name="ClassDefinition" isAbstract="false" author="Daniel Legien" description="The ClassDefinition class.">
+		<fields>
+			<field name="name" visibility="private" type="string" description="The name of the class." setter="true" getter="true" />
+			<field name="namespace" visibility="private" type="string" description="The namespace of the class" setter="true" getter="true" />
+			<field name="abstract" visibility="private" type="bool" description="Whether the class is abstract or not." setter="true" getter="true" />
+			<field name="author" visibility="private" type="string" description="The name of the author." setter="true" getter="true" />
+			<field name="description" visibility="private" type="string" description="The description of the class." setter="true" getter="true" />
+			<field name="methods" visibility="private" type="array" description="The methods of the class." />
+			<field name="fields" visibility="private" type="array" description="The fields of the class." />
+			<field name="setters" visibility="private" type="array" description="The setters of the class." />
+			<field name="getters" visibility="private" type="array" description="The getters of the class." />
+			<field name="extends" visibility="private" type="array" description="The classes the class extends." getter="true" setter="true" />
+			<field name="implements" visibility="private" type="array" description="The interfaces the class implements." getter="true" setter="true" />
+		</fields>
+		<methods>
+			<method name="__construct" description="Constructor of the ClassDefinition class.">
+				<body>$this->name = $name;\n$this->namespace = $namespace;\n$this->extends = $extends;\n$this->implements = $implements;</body>
+				<parameters>
+					<parameter name="name" type="string" />
+					<parameter name="namespace" type="string" />
+					<parameter name="extends" type="array" defaultValue="array()" />
+					<parameter name="implements" type="array" defaultValue="array()" />
+				</parameters>
+			</method>
+			<method name="setMethod" description="Sets a method of the class.">
+				<body>$this->methods[] = $method;</body>
+				<parameters>
+					<parameter name="method" type="Method" />
+				</parameters>
+			</method>
+			<method name="setField" description="Sets a field of the class.">
+				<body>$this->fields[] = $field;</body>
+				<parameters>
+					<parameter name="field" type="Field" />
+				</parameters>
+			</method>
+			<method name="setSetter" description="Adds a setter to the class.">
+				<body>$this->setters[$name] = TRUE;</body>
+				<parameters>
+					<parameter name="name" type="string" />
+				</parameters>
+			</method>
+			<method name="setGetter" description="Adds a getter to the class.">
+				<body>$this->getters[$name] = TRUE;</body>
+				<parameters>
+					<parameter name="name" type="string" />
+				</parameters>
+			</method>			
+		</methods>
+	</class>
+</classes>

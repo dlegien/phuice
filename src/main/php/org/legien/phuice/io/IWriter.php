@@ -18,35 +18,30 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	namespace org\legien\phuice\generator\types;
-	
+	namespace org\legien\phuice\io;
+
 	/**
-	 * A generator for standard code for models.
+	 * A writer that can write to a resource. 
 	 * 
 	 * @author		Daniel Legien
-	 * @package		org.legien.phuice.generator
-	 * @subpackage	types
+	 * @package		org.legien.phuice
+	 * @subpackage	io
 	 *
 	 */
-	interface IModelGenerator extends ITypeGenerator
-	{	
+	interface IWriter
+	{
 		/**
-		 * Creates a class definition from the given parameters.
 		 * 
-		 * @param	string	$modelName	The name of the model.
-		 * @param	string	$namespace	The namespace of the model.
-		 * @param	array 	$fields		The fields of the model.
 		 * 
-		 * @return	ModelGenerator		this
+		 * @param string	$resourceName	The name of the resource.
+		 * @param mixed		$content		The content to write to the resource.
 		 */
-		public function setClass($modelName, $namespace, $fields = array());
+		public function write($resourceName, $content);
 		
 		/**
-		 * Returns the model definition with the given name.
+		 * Creates the given path if it does not exist.
 		 * 
-		 * @param	string	$name	The name of the model.
-		 * 
-		 * @return	ClassDefinition  
+		 * @param string $path The path.
 		 */
-		public function getClass($name);
-	}
+		public function createPath($path);
+	} 

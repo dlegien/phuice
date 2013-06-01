@@ -33,7 +33,8 @@
 		$rootNamespace,
 		new org\legien\phuice\structures\StructureGateway($pdo),								// Gateway to retrieve database structure
 		new org\legien\phuice\generator\types\ModelGenerator($languageGenerator),				// Generator for model classes
-		new org\legien\phuice\generator\types\phuice\DBStorageGenerator($languageGenerator) 	// Generator for gateway classes
+		new org\legien\phuice\generator\types\phuice\DBStorageGenerator($languageGenerator), 	// Generator for gateway classes
+		new org\legien\phuice\io\FileWriter()
 	);
 	$generator->Generate();
 	

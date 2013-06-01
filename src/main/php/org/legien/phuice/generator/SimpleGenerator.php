@@ -5,7 +5,8 @@
 	use org\legien\phuice\generator\types\IModelGenerator;
 	use org\legien\phuice\generator\types\IGatewayGenerator;
 	use org\legien\phuice\structures\StructureGatewayInterface;
-	
+	use org\legien\phuice\io\IWriter;
+		
 	class SimpleGenerator
 	{
 		private $_basepath;
@@ -13,14 +14,26 @@
 		private $_structureGateway;
 		private $_modelGenerator;
 		private $_gatewayGenerator;
+		private $_writer;
 		
-		public function __construct($basepath, $rootNamespace, StructureGatewayInterface $structureGateway, IModelGenerator $modelGenerator, IGatewayGenerator $gatewayGenerator)
+		public function __construct($basepath, $rootNamespace, StructureGatewayInterface $structureGateway, IModelGenerator $modelGenerator, IGatewayGenerator $gatewayGenerator, IWriter $writer)
 		{
 			$this->SetBasepath($basepath);
 			$this->SetRootNamespace($rootNamespace);
 			$this->SetStructureGateway($structureGateway);
 			$this->SetModelGenerator($modelGenerator);
 			$this->SetGatewayGenerator($gatewayGenerator);
+			$this->setWriter($writer);
+		}
+		
+		private function setWriter(IWriter $writer)
+		{
+			$this->_writer = $writer;
+		}
+		
+		private function getWriter()
+		{
+			return $this->_writer;
 		}
 		
 		private function SetRootNamespace($rootNamespace)
@@ -121,33 +134,12 @@
 				$this->GenerateSource($classname);
 			}
 		}
-	
-		private function CreatePath($path)
-		{
-			$packages = explode('/', $path);
-			$index = count($packages)-1;
-			unset($packages[$index]);
-			$folder = getcwd() . DIRECTORY_SEPARATOR;
-			foreach($packages as $package)
-			{
-				$folder .= $package;
-				if(!file_exists($folder))
-				{
-					mkdir($folder);
-				}
-				$folder .= DIRECTORY_SEPARATOR;
-			}
-		}
 		
 		private function WriteFile($path, $source)
 		{
 			$path = str_replace('\\', '/', $path) . '.php';
-			
-			echo "Writing $path" . PHP_EOL;
-			
-			$this->CreatePath($path);
-			
-			file_put_contents($path, $source);
+			$this->getWriter()->createPath($path);
+			$this->getWriter()->write($path, $source);
 		}
 		
 	}
