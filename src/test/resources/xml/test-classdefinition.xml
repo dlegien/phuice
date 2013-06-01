@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classes>
-	<class name="ClassDefinition" isAbstract="false" author="Daniel Legien" description="The ClassDefinition class.">
+	<class name="ClassDefinition" isAbstract="false" author="Daniel Legien" description="The ClassDefinition class." extends="abc">
 		<fields>
 			<field name="name" visibility="private" type="string" description="The name of the class." setter="true" getter="true" />
 			<field name="namespace" visibility="private" type="string" description="The namespace of the class" setter="true" getter="true" />

@@ -4,10 +4,10 @@
 	use org\legien\phuice\generator\converters\XMLConverter;
 	use org\legien\phuice\io\FileReader;
 	use org\legien\phuice\io\TestResourceReader;
+	use org\legien\phuice\generator\converters\ConverterException;
 	
 	class XMLConverterTest extends TestBase
-	{
-		
+	{		
 		public function testConversion()
 		{
 			$reader = new TestResourceReader('xml/test-classdefinition.xml');
@@ -31,5 +31,18 @@
 			$privateFields = $fields['private'];
 			
 			$this->assertCount(11, $privateFields);
+		}
+		
+		/**
+		 * Tests if an invalid class defintion causes the expected
+		 * exception to be thrown.
+		 * 
+		 * @expectedException org\legien\phuice\generator\converters\ConverterException
+		 */
+		public function testFaultyClassXml()
+		{
+			$reader = new TestResourceReader('xml/test-classdefinition-invalid.xml');
+			$converter = new XMLConverter();
+			$converter->convert($reader->read());
 		}
 	}
