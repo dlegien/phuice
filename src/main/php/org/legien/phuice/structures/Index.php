@@ -87,7 +87,14 @@
 		{
 			foreach($columns as $column) 
 			{
-				$this->setIndexColumn($column);
+				if($column)
+				{
+					$this->setIndexColumn($column);					
+				}
+				else 
+				{
+					throw new StructureException('The index columns for index "' .$this->getName() .'" could not be found.');
+				}
 			}
 		}
 		
