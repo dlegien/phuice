@@ -154,13 +154,13 @@
 			
 				$this->GetModelGenerator()->setClass(
 					$classname,
-					$namespace . DIRECTORY_SEPARATOR . 'models',
+					$namespace . '\\models',
 					$modelFields
 				);
 			
 				$this->GetGatewayGenerator()->setClass(
 					$classname,
-					$namespace . DIRECTORY_SEPARATOR . 'storages',
+					$namespace . '\\storages',
 					$this->GetModelGenerator()->getClass($classname),
 					$indexes
 				);

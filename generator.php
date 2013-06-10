@@ -15,7 +15,7 @@
 		die('Could not load framework.');
 	}
 	
-	include_once('build/phuice.phar');
+	include_once($phuicePath);
 	
 	$languageGenerator = new org\legien\phuice\generator\languages\PHPGenerator();
 	
