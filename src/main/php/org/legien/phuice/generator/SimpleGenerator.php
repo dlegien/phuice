@@ -1,12 +1,39 @@
 <?php
 
+	/**
+	 * Phuice - EP Framework
+	 * Copyright (C) 2013 Daniel Legien
+	 *
+	 * This program is free software: you can redistribute it and/or modify
+	 * it under the terms of the GNU General Public License as published by
+	 * the Free Software Foundation, either version 3 of the License, or
+	 * (at your option) any later version.
+	 *
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU General Public License for more details.
+	 *
+	 * You should have received a copy of the GNU General Public License
+	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	 */
+
 	namespace org\legien\phuice\generator;
 	
 	use org\legien\phuice\generator\types\IModelGenerator;
 	use org\legien\phuice\generator\types\IGatewayGenerator;
 	use org\legien\phuice\structures\StructureGatewayInterface;
 	use org\legien\phuice\io\IWriter;
-		
+	use org\legien\phuice\structures\StructureException;
+			
+	/**
+	 * A simple repository and model generator.
+	 * 
+	 * @author		Daniel Legien
+	 * @package		org.legien.phuice
+	 * @subpackage	generator
+	 *
+	 */
 	class SimpleGenerator
 	{
 		private $_basepath;
@@ -109,8 +136,15 @@
 				$namespace = implode('\\', array_slice($fullQualifiedName, 0, -1));
 				//$fqnString = implode('/', $fullQualifiedName);
 			
-				$columns = $sgw->findTableColumns($table);
-				$indexes = $sgw->findTableIndexes($table);
+				try 
+				{
+					$columns = $sgw->findTableColumns($table);
+					$indexes = $sgw->findTableIndexes($table);
+				}
+				catch (StructureException $e)
+				{
+					throw new StructureException($e->getMessage() . '. This error occured while processing the table ' . $table->getName());
+				}
 			
 				$modelFields = array();
 				foreach($columns as $column)
