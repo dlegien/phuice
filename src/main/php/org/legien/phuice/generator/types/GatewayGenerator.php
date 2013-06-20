@@ -160,7 +160,7 @@
 				->setDependency(new Dependency($this->orderingNamespace))
 				// ->setImplements('\api\DataAbstraction\DataGatewayInterface')
 			;
-			
+			/*
 			// Set the fields
 			$class->setField(new Field(
 				'connection',
@@ -186,7 +186,7 @@
 
 			// Compose the required methods
 			$class->setMethod($this->composeConstructorMethod());						
-			
+			*/
 			foreach($indexes as $index)
 			{
 				$parameters = array();
