@@ -13,7 +13,7 @@
 			$this->service = $service;
 		}
 		
-		public function execute($bind)
+		public function execute($bind = '')
 		{
 			$this->service->registerCall('StatementFake', 'execute', array($bind));
 		}

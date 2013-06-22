@@ -320,8 +320,9 @@
 		private function evaluateUpdate(Statement $statement)
 		{
 			$TABLES = $this->evaluateTables($statement);
+			$TABLES .= $this->evaluateJoins($statement);
 			$SETS = $this->evaluateSets($statement);
-			$WHERE = $this->evaluateWhere($statement);			
+			$WHERE = $this->evaluateWhere($statement);	
 			
 			return 
 				'UPDATE ' . $TABLES .
@@ -339,11 +340,13 @@
 		 */		
 		private function evaluateDelete(Statement $statement)
 		{
+			$FIELDS = $this->evaluateWhat($statement);
 			$TABLES = $this->evaluateTables($statement);
+			$TABLES .= $this->evaluateJoins($statement);
 			$WHERE = $this->evaluateWhere($statement);	
 						
 			return
-				'DELETE FROM '. $TABLES .
+				'DELETE ' . $FIELDS .' FROM '. $TABLES .
 				$WHERE;
 		}
 		

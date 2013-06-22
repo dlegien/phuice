@@ -83,7 +83,9 @@
 		 */
 		public function prepare(Statement $statement)
 		{
-			$pdoStatement = $this->getConnection()->prepare($this->getEvaluator()->evaluate($statement));
+			$sql = $this->getEvaluator()->evaluate($statement);
+			var_dump($sql);
+			$pdoStatement = $this->getConnection()->prepare($sql);
 			if($pdoStatement)
 			{
 				return $pdoStatement;
@@ -113,10 +115,14 @@
 		 * @param Statement $statement	The statement.
 		 * @throws PDOException	If a database error occurs
 		 */
-		public function catchError(Statement $statement)
+		public function catchError(Statement $statement, \PDOStatement $pdoStatement)
 		{
-			$error = $this->getConnection()->errorInfo();			
-			throw new PDOException('Database error: "' . $error[2]. '" during ' . $this->getEvaluator()->evaluate($statement));
+			$error = $this->getConnection()->errorInfo();
+			$pdoError = $pdoStatement->errorInfo();
+
+			$errorText = $error[2] != '' ? $error : $pdoError[2];
+			
+			throw new PDOException('Database error: "' . $errorText. '" during ' . $this->getEvaluator()->evaluate($statement));
 		}
 		
 		/**

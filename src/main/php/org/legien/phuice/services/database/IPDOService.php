@@ -56,7 +56,7 @@
 		 * @param Statement $statement	The statement.
 		 * @throws PDOException	If a database error occurs
 		 */
-		public function catchError(Statement $statement);
+		public function catchError(Statement $statement, \PDOStatement $pdoStatement);
 		
 		/**
 		 * Returns the last inserted id.

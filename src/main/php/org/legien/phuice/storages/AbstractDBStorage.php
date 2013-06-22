@@ -66,7 +66,14 @@
 		 * @var string
 		 */
 		private $_modelname;
-
+		
+		/**
+		 * Whether the storage is an aggregate storage.
+		 * 
+		 * @var boolean
+		 */
+		private $_isAggregateStorage;
+		
 		/**
 		 * Initializes the storage.
 		 * 
@@ -79,6 +86,7 @@
 			$this->setConnection($connection);
 			$this->setTable($table);
 			$this->setModel($model);
+			$this->setIsAggregate(FALSE);
 		}
 
 		/**
@@ -149,17 +157,20 @@
 		 * 
 		 * @return array
 		 */
-		protected function generateBind($obj, $prefix = NULL) 
+		protected function generateBind($obj, $prefix = NULL, $remove = array()) 
 		{
 			$bind = array();
 			
 			foreach($obj->toArray() as $key => $value)
 			{
-				if(!is_null($prefix))
+				if(!in_array($key, $remove))
 				{
-					$key = "o$key";
+					if(!is_null($prefix))
+					{
+						$key = "o$key";
+					}
+					$bind[':'.$key] = $value;
 				}
-				$bind[':'.$key] = $value;
 			}			
 			return $bind;
 		}
@@ -179,12 +190,26 @@
 			
 			$stmt = new Statement;
 			$stmt->deleteFrom($this->_table);
+			
+			if($this->isAggregate())
+			{
+				$this->addAggregates($stmt);
+				$stmt->select($this->_table);
+				foreach($this->getMappings() as $mapping)
+				{
+					$stmt->select($mapping->getSourceTable());
+				}
+				
+				$ind = array_keys($objKeys, 'id'); 
+				unset($objKeys[$ind[0]]);
+				$objKeys[] = $this->_table.'.id';
+			}
 
 			$grp = new AndConditionGroup;
 
 			foreach($objKeys as $objKey)
 			{
-				$grp->set(new Condition($objKey, '=', ':'.$objKey, FALSE));
+				$grp->set(new Condition($objKey, '=', ':'.str_replace('.', '', $objKey), FALSE));
 			}
 
 			if(count($objKeys) > 0) {
@@ -196,11 +221,75 @@
 				throw new \Exception('Couldn\'t prepare statement in AbstractDBStorage.delete');
 			}
 			
-			if(!$statement->execute($this->generateBind($obj)))
+			$binds = $this->generateBind($obj);
+			
+			if($this->isAggregate())
 			{
+				unset($binds[':id']);
+				$index = ':'.$this->_table.'id';
+				$binds[$index] = $this->getProtectedValue($obj, 'id');
+			}
+			
+			if(!$statement->execute($binds))
+			{
+				$this->_connection->catchError($stmt, $statement);
 				throw new \Exception('Couldn\'t execute statement in AbstractDBStorage.delete with ' . implode(', ',$this->generateBind($obj)));
 			}
 			return TRUE;
+		}
+		
+		/**
+		 * Copies the given field's value from one object to another.
+		 * 
+		 * @param object $from	The source object.
+		 * @param object $to	The destination object.
+		 * @param string $key	The name of the field.
+		 */
+		private function copyProtectedValue(&$from, &$to, $key)
+		{
+			$fromObject = new \ReflectionObject($from);
+			$toObject = new \ReflectionObject($to);
+			
+			$toProperty = $toObject->getProperty($key);
+			$toProperty->setAccessible(TRUE);
+			
+			$fromProperty = $fromObject->getProperty($key);
+			$fromProperty->setAccessible(TRUE);
+						
+			$toProperty->setValue($to, $fromProperty->getValue($from));
+		}
+		
+		/**
+		 * Sets the value of the given property to the given value.
+		 * 
+		 * @param object	$to		The destination object.
+		 * @param string	$key	The name of the property.
+		 * @param mixed		$value	The value to set.
+		 */
+		private function setProtectedValue(&$to, $key, $value)
+		{
+			$toObject = new \ReflectionObject($to);
+				
+			$toProperty = $toObject->getProperty($key);
+			$toProperty->setAccessible(TRUE);
+
+			$toProperty->setValue($to, $value);
+		}
+		
+		/**
+		 * Returns the value of the given property.
+		 * 
+		 * @param object $from	The destination object.
+		 * @param string $key	The name of the property.
+		 * 
+		 * @return mixed
+		 */
+		private function getProtectedValue($from, $key)
+		{
+			$fromObject = new \ReflectionObject($from);				
+			$fromProperty = $fromObject->getProperty($key);
+			$fromProperty->setAccessible(TRUE);			
+			return $fromProperty->getValue($from);			
 		}
 		
 		/**
@@ -213,10 +302,44 @@
 		 * 
 		 * @return string
 		 */
-		public function create($obj)
+		public function create($obj, $nesting = TRUE)
 		{
 			$objKeys = $this->getKeys($obj);
+
+			$remove = array();
+			
+			if($this->isAggregate() && $nesting)
+			{	
+				$mappings = $this->getMappings();
 				
+				foreach($mappings as $mapping)
+				{
+					$model = $mapping->getSourceModel();
+
+					$op = new $model;
+					$opKeys = $this->getKeys($op);	
+					
+					foreach(array_intersect($objKeys, $opKeys) as $key)
+					{
+						if($key != 'id')
+						{
+							$index = array_keys($objKeys, $key);
+							unset($objKeys[$index[0]]);
+							$remove[] = $key;
+						}
+						
+						$this->copyProtectedValue($obj, $op, $key);
+					}
+
+					$tmp = $this->_table;
+					$this->_table = $mapping->getSourceTable();
+					$cid = $this->create($op, FALSE);
+					$this->_table = $tmp;
+					
+					$this->setProtectedValue($obj, 'id', $cid);
+				}
+			}
+			
 			$stmt = new Statement;
 			$stmt
 				->insertInto($this->_table)
@@ -233,9 +356,9 @@
 				throw new \Exception('Couldn\'t prepare statement in AbstractDBStorage.create');
 			}
 						
-			if(!$statement->execute($this->generateBind($obj)))
+			if(!$statement->execute($this->generateBind($obj, NULL, $remove)))
 			{
-				$this->_connection->catchError($stmt);
+				$this->_connection->catchError($stmt, $statement);
 				throw new \Exception('AbstractDBStorage.create: Couldn\'t execute statement '.$stmt.' with ' . implode(', ',$this->generateBind($obj)));
 			}
 			
@@ -264,16 +387,29 @@
 				
 				$stmt
 					->update($this->_table);
+				
+				if($this->isAggregate())
+				{
+					$this->addAggregates($stmt);
+					
+					$oindex = array_keys($oldObjKeys, 'id');
+					unset($oldObjKeys[$oindex[0]]);
+					$oldObjKeys[] = $this->_table.'.id';
+					
+					$nindex = array_keys($newObjKeys, 'id');
+					unset($newObjKeys[$nindex[0]]);
+					$newObjKeys[] = $this->_table.'.id';
+				}
 					
 				foreach($newObjKeys as $newObjKey)
 				{
-					$stmt->set($newObjKey, ':'.$newObjKey, FALSE);	
+					$stmt->set($newObjKey, ':'.str_replace('.', '', $newObjKey), FALSE);	
 				}
 				
 				$grp = new AndConditionGroup;
 				foreach($oldObjKeys as $oldObjKey)
 				{
-					$grp->set(new Condition($oldObjKey, '=', ':o'.$oldObjKey, FALSE));					
+					$grp->set(new Condition($oldObjKey, '=', ':o'.str_replace('.', '', $oldObjKey), FALSE));					
 				}
 				$stmt->where($grp);
 				
@@ -284,9 +420,22 @@
 				
 				$binds = array_merge($this->generateBind($obj),$this->generateBind($oldObj, 'o'));
 						
+				if($this->isAggregate())
+				{
+					unset($binds[':oid']);
+					unset($binds[':id']);
+					
+					$oindex = ':o'.$this->_table.'id';
+					$binds[$oindex] = $this->getProtectedValue($oldObj, 'id');
+					$nindex = ':'.$this->_table.'id';
+					$binds[$nindex] = $this->getProtectedValue($obj, 'id');
+				}
+				
+				var_dump($binds);
+				
 				if(!$statement->execute($binds))
 				{
-					throw new \Exception('Couldn\'t execute statement in AbstractDBStorage.update with ' . implode(', ',$binds));
+					$this->_connection->catchError($stmt, $statement);
 				}
 				
 				return TRUE;				
@@ -309,7 +458,7 @@
 			{
 				if($filter instanceof StorageFilter)
 				{
-					$grp->set(new Condition($filter->getField(), $filter->getRelation(), ':'.$filter->getField(), FALSE));
+					$grp->set(new Condition($this->_table.'.'.$filter->getField(), $filter->getRelation(), ':'.$filter->getField(), FALSE));
 					$bind[':'.$filter->getField()] = $filter->getValue();
 				}
 			}
@@ -349,7 +498,32 @@
 				->select('*')
 				->from($this->_table)
 			;
+			
+			if($this->isAggregate())
+			{
+				$this->addAggregates($stmt);
+			}
+			
 			return $stmt;
+		}
+		
+		/**
+		 * Adds aggregate information to the statement.
+		 * 
+		 * @param Statement $stmt The statement to alter.
+		 */
+		private function addAggregates(Statement $stmt)
+		{
+			foreach($this->getMappings() as $mapping)
+			{	
+				foreach($mapping->getKeyRelations() as $relation)
+				{
+					$joins[] = $mapping->getSourceTable().'.'.$relation->getSourceKey().$relation->getRelation().$this->_table.'.'.$relation->getDestinationKey();
+				} 
+				
+				$join = implode(' AND ', $joins);				
+				$stmt->join($mapping->getSourceTable(), $join, Statement::$LEFT_JOIN);
+			}
 		}
 		
 		/**
@@ -394,7 +568,7 @@
 				{
 					try 
 					{
-						$this->_connection->catchError($stmt);
+						$this->_connection->catchError($stmt, $statement);
 					}
 					catch(\Exception $e) 
 					{
@@ -408,7 +582,7 @@
 				{
 					try
 					{
-						$this->_connection->catchError($stmt);
+						$this->_connection->catchError($stmt, $statement);
 					}
 					catch(\Exception $e)
 					{
@@ -430,6 +604,7 @@
 			else
 			{
 				$newobject = $statement->fetchObject($this->_modelname);
+				
 				$this->cacheObject($newobject);
 				return $newobject;
 			}
@@ -466,7 +641,7 @@
 			{
 				try
 				{
-					$this->_connection->catchError($stmt);
+					$this->_connection->catchError($stmt, $statement);
 				}
 				catch(\Exception $e)
 				{
@@ -475,5 +650,35 @@
 			}
 
 			return $statement->fetchAll(\PDO::FETCH_CLASS, $this->_modelname);
+		}
+		
+		/**
+		 * Sets whether the storage is an aggregate storage.
+		 * 
+		 * @param boolean $isAggregate Whether the storage is an aggregate storage.
+		 */
+		protected function setIsAggregate($isAggregate)
+		{
+			$this->_isAggregateStorage = $isAggregate;
+		}
+		
+		/**
+		 * Returns whether the storage is an aggregate storage.
+		 * 
+		 * @return boolean
+		 */
+		private function isAggregate()
+		{
+			return $this->_isAggregateStorage;
+		}
+		
+		/**
+		 * Standard mappings (none).
+		 * 
+		 * @return array
+		 */
+		protected function getMappings()
+		{
+			return array();
 		}
 	}
