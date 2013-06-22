@@ -33,7 +33,94 @@
 	class FileWriter implements IWriter
 	{
 		/**
-		 * (non-PHPdoc)
+		 * Whether to lock the file exclusively.
+		 * 
+		 * @var boolean
+		 */
+		private $_lockExclusively;
+		
+		/**
+		 * Whether to append to the file.
+		 * 
+		 * @var boolean
+		 */
+		private $_append;
+		
+		/**
+		 * Constructor.
+		 */
+		public function __construct()
+		{
+			$this->setLockExclusively(FALSE);
+			$this->setAppend(FALSE);
+		}
+		
+		/**
+		 * Sets whether to append to a file.
+		 * 
+		 * @param boolean $append Whether to append to a file.
+		 */
+		private function setAppend($append)
+		{
+			$this->_append = $append;
+		}
+		
+		/**
+		 * Sets whether to lock the file exclusively.
+		 * 
+		 * @param boolean $lock Whether to lock the file exclusively.
+		 */
+		private function setLockExclusively($lock)
+		{
+			$this->_lockExclusively = $lock;
+		}
+		
+		/**
+		 * Returns whether the file should be locked exclusively.
+		 * 
+		 * @return boolean
+		 */
+		private function getLockExclusively()
+		{
+			return $this->_lockExclusively;
+		}
+		
+		/**
+		 * Returns whether to append to the file.
+		 * 
+		 * @return boolean
+		 */
+		private function getAppend()
+		{
+			return $this->_append;
+		}
+		
+		/**
+		 * Returns the flags to apply.
+		 * 
+		 * @return string
+		 */
+		private function getFlags()
+		{
+			if($this->getLockExclusively() && $this->getAppend())
+			{
+				return FILE_APPEND | LOCK_EX;
+			}
+			elseif($this->getLockExclusively())
+			{
+				return LOCK_EX;
+			}
+			elseif($this->getAppend())
+			{
+				return FILE_APPEND;
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+		
+		/**
 		 * @see \org\legien\phuice\io\IWriter::createPath()
 		 */
 		public function createPath($path)
@@ -54,11 +141,16 @@
 		}
 
 		/**
-		 * (non-PHPdoc)
 		 * @see \org\legien\phuice\io\IWriter::write()
 		 */
 		public function write($resourceName, $content)
 		{
-			file_put_contents($resourceName, $content);
+			if(!file_exists($resourceName))
+				throw new FileNotFoundException($resourceName . ' not found.');
+			
+			if($flags = $this->getFlags() !== FALSE)
+				file_put_contents($resourceName, $content, $flags);
+			else
+				file_put_contents($resourceName, $content);
 		}
 	}

@@ -18,30 +18,36 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	namespace org\legien\phuice\io;
+	use org\legien\phuice\testing\TestBase;
+	use org\legien\phuice\io\FileReader;
 
 	/**
-	 * A writer that can write to a resource. 
+	 * Testcases for the FileReader.
 	 * 
 	 * @author		Daniel Legien
-	 * @package		org.legien.phuice
-	 * @subpackage	io
 	 *
 	 */
-	interface IWriter
+	class FileReaderTest extends TestBase
 	{
 		/**
-		 * Writes the given content to the specified resource.
-		 * 
-		 * @param string	$resourceName	The name of the resource.
-		 * @param mixed		$content		The content to write to the resource.
+		 * Tests if the content of a file can be read correctly.
 		 */
-		public function write($resourceName, $content);
+		public function testRead()
+		{
+			$reader = new FileReader('src/test/resources/xml/test-classdefinition-invalid.xml');
+			
+			$this->assertEquals('asd213das', $reader->read());
+		}
 		
 		/**
-		 * Creates the given path if it does not exist.
+		 * Tests if a FileNotFoundException is thrown if the specified file
+		 * doesn't exist.
 		 * 
-		 * @param string $path The path.
+		 * @expectedException org\legien\phuice\io\FileNotFoundException
 		 */
-		public function createPath($path);
-	} 
+		public function testFileNotFound()
+		{
+			$reader = new FileReader('file-that-doesnt-even-exist.txt');
+			$reader->read();
+		}
+	}
