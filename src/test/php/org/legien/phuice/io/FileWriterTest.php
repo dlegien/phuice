@@ -17,8 +17,7 @@
 		public function testWrite()
 		{
 			// Preparation
-			$writer = new FileWriter();			
-			$name = uniqid();			
+			$writer = new FileWriter();	
 			$content = uniqid();			
 			$path = 'src/test/resources/tmp/bla.txt';
 			
