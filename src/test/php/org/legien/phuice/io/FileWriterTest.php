@@ -28,8 +28,5 @@
 			// Verification
 			$this->assertFileExists($path);
 			$this->assertEquals($content, file_get_contents($path));
-			
-			// Clean up
-			unlink($path);
 		}
 	}
