@@ -146,11 +146,17 @@
 		public function write($resourceName, $content)
 		{
 			if(!file_exists($resourceName))
+			{
 				throw new FileNotFoundException($resourceName . ' not found.');
+			}
 			
 			if($flags = $this->getFlags() !== FALSE)
+			{
 				file_put_contents($resourceName, $content, $flags);
+			}
 			else
+			{
 				file_put_contents($resourceName, $content);
+			}
 		}
 	}
