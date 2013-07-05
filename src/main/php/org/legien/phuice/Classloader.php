@@ -85,7 +85,7 @@
 		 * 
 		 * @return Classloader
 		 */
-		public function getInstance() 
+		public static function getInstance() 
 		{
 			if(is_null(self::$_instance)) 
 			{
