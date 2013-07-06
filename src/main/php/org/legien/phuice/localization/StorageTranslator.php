@@ -60,7 +60,7 @@
 		 * (non-PHPdoc)
 		 * @see \org\legien\phuice\localization\Translator::translate()
 		 */
-		public function translate($string, $args) 
+		public function translate($string, $args = array()) 
 		{			
 			$translation = $this->getStorage()->findTranslationByPlaceholder($string);
 			
