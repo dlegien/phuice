@@ -60,9 +60,16 @@
 		 * (non-PHPdoc)
 		 * @see \org\legien\phuice\localization\Translator::translate()
 		 */
-		public function translate($string) 
-		{
-			return $this->getStorage()->findTranslationByPlaceholder($string);
+		public function translate($string, $args) 
+		{			
+			$translation = $this->getStorage()->findTranslationByPlaceholder($string);
+			
+			foreach($args as $value)
+			{
+				$translation = str_replace('{'.$i++.'}', $value, $translation);
+			}
+			
+			return $translation;
 		}
 
 		/**

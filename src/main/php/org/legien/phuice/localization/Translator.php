@@ -34,7 +34,8 @@
 		/**
 		 * Translates the given string using a dictionary.
 		 * 
-		 * @param string $string The string to translate.
+		 * @param string	$string The string to translate.
+		 * @param array		$args	The arguments to replace in the translation.
 		 */
-		public function translate($string);
+		public function translate($string, $args);
 	}

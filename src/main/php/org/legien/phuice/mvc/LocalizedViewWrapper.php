@@ -82,6 +82,9 @@
 		 */
 		public function translate($string) 
 		{
-			return $this->getTranslator()->translate($string);
+			$args = func_get_args();
+			unset($args[0]);
+				
+			return $this->getTranslator()->translate($string, $args);
 		}
 	}
