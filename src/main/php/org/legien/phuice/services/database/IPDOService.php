@@ -79,4 +79,11 @@
 		 * @return StatementEvaluator
 		 */
 		public function getEvaluator();
+		
+		/**
+		 * Creates a new transaction.
+		 * 
+		 * @return ITransaction
+		 */
+		public function createTransaction();
 	}

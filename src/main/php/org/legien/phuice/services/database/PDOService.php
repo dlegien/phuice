@@ -165,5 +165,14 @@
 		{
 			return $this->_connection;
 		}
+		
+		/**
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\services\database\IPDOService::createTransaction()
+		 */
+		public function createTransaction()
+		{
+			return new PDOTransaction($this->getConnection());
+		}
 	}
 	

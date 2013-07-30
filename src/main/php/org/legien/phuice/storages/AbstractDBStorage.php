@@ -49,7 +49,7 @@
 		/**
 		 * The database connection.
 		 * 
-		 * @var PDOService
+		 * @var IPDOService
 		 */
 		private $_connection;
 		
@@ -148,6 +148,26 @@
 			return array_keys($obj->toArray());
 		}
 
+		protected function getOwnKeys($obj)
+		{
+			return array_keys($obj->toOwnArray());
+		}		
+		
+		private function removeNullValues($array)
+		{
+			$result = array();
+			
+			foreach ($array as $key => $value)
+			{
+				if (!is_null($value))
+				{
+					$result[$key] = $value;
+				}
+			}
+			
+			return $result;
+		}
+		
 		/**
 		 * Generates the binding for the database interaction by
 		 * retrieving the attributes from the model.
@@ -157,11 +177,25 @@
 		 * 
 		 * @return array
 		 */
-		protected function generateBind($obj, $prefix = NULL, $remove = array()) 
+		protected function generateBind($obj, $prefix = NULL, $remove = array(), $nesting = TRUE, $removeNulls = FALSE) 
 		{
 			$bind = array();
 			
-			foreach($obj->toArray() as $key => $value)
+			if($nesting)
+			{
+				$array = $obj->toArray();
+			}
+			else 
+			{
+				$array = $obj->toOwnArray();
+			}
+			
+			if($removeNulls)
+			{
+				$array = $this->removeNullValues($array);
+			}
+			
+			foreach($array as $key => $value)
 			{
 				if(!in_array($key, $remove))
 				{
@@ -193,9 +227,9 @@
 			
 			if($this->isAggregate())
 			{
-				$this->addAggregates($stmt);
+				$this->addAggregates($stmt, TRUE);
 				$stmt->select($this->_table);
-				foreach($this->getMappings() as $mapping)
+				foreach(array_reverse($this->getMappings()) as $mapping)
 				{
 					$stmt->select($mapping->getSourceTable());
 				}
@@ -209,6 +243,9 @@
 
 			foreach($objKeys as $objKey)
 			{
+				if(stripos($objKey, '.') == false && is_null($this->getProtectedValue($obj, $objKey)))
+					continue;
+				
 				$grp->set(new Condition($objKey, '=', ':'.str_replace('.', '', $objKey), FALSE));
 			}
 
@@ -221,7 +258,7 @@
 				throw new \Exception('Couldn\'t prepare statement in AbstractDBStorage.delete');
 			}
 			
-			$binds = $this->generateBind($obj);
+			$binds = $this->generateBind($obj, NULL, array(), TRUE, TRUE);
 			
 			if($this->isAggregate())
 			{
@@ -247,12 +284,13 @@
 		 */
 		private function copyProtectedValue(&$from, &$to, $key)
 		{
+			
 			$fromObject = new \ReflectionObject($from);
 			$toObject = new \ReflectionObject($to);
 			
 			$toProperty = $toObject->getProperty($key);
 			$toProperty->setAccessible(TRUE);
-			
+
 			$fromProperty = $fromObject->getProperty($key);
 			$fromProperty->setAccessible(TRUE);
 						
@@ -304,9 +342,17 @@
 		 */
 		public function create($obj, $nesting = TRUE)
 		{
-			$objKeys = $this->getKeys($obj);
+			if($nesting)
+			{
+				$objKeys = $this->getKeys($obj);
+			}
+			else
+			{
+				$objKeys = $this->getOwnKeys($obj);
+			}
 
 			$remove = array();
+			$previouskeys = null;
 			
 			if($this->isAggregate() && $nesting)
 			{	
@@ -314,26 +360,40 @@
 				
 				foreach($mappings as $mapping)
 				{
-					$model = $mapping->getSourceModel();
-
-					$op = new $model;
-					$opKeys = $this->getKeys($op);	
+					$model = $mapping->getSourceModel();				
 					
+					$op = new $model;
+					$opKeys = $this->getKeys($op);
+					
+					if(!is_null($previouskeys))
+					{						
+						$opKeys = array_diff($opKeys, $previouskeys);
+						$opKeys[] = 'id';
+					}
+				
+					$previouskeys = $opKeys;	
+
 					foreach(array_intersect($objKeys, $opKeys) as $key)
 					{
-						if($key != 'id')
+						if(strtolower($key) != 'id')
 						{
 							$index = array_keys($objKeys, $key);
 							unset($objKeys[$index[0]]);
 							$remove[] = $key;
 						}
 						
-						$this->copyProtectedValue($obj, $op, $key);
+						$this->copyProtectedValue($obj, $op, strtolower($key));
 					}
 
 					$tmp = $this->_table;
 					$this->_table = $mapping->getSourceTable();
-					$cid = $this->create($op, FALSE);
+					
+					$insertId = $this->create($op, FALSE);
+					if(!isset($cid) || $cid == 0)
+					{
+						$cid = $insertId;
+					}
+					 
 					$this->_table = $tmp;
 					
 					$this->setProtectedValue($obj, 'id', $cid);
@@ -350,18 +410,17 @@
 				$stmt->field($objKey);
 				$stmt->value(':'.$objKey, FALSE);
 			}
-															
+
 			if(!$statement = $this->_connection->prepare($stmt))
 			{
 				throw new \Exception('Couldn\'t prepare statement in AbstractDBStorage.create');
 			}
 						
-			if(!$statement->execute($this->generateBind($obj, NULL, $remove)))
+			if(!$statement->execute($this->generateBind($obj, NULL, $remove, $nesting)))
 			{
 				$this->_connection->catchError($stmt, $statement);
 				throw new \Exception('AbstractDBStorage.create: Couldn\'t execute statement '.$stmt.' with ' . implode(', ',$this->generateBind($obj)));
 			}
-			
 			return $this->_connection->lastInsertId();
 		}
 		
@@ -392,7 +451,7 @@
 				{
 					$this->addAggregates($stmt);
 					
-					$oindex = array_keys($oldObjKeys, 'id');
+					$oindex = array_keys($oldObjKeys, 'id');					
 					unset($oldObjKeys[$oindex[0]]);
 					$oldObjKeys[] = $this->_table.'.id';
 					
@@ -409,6 +468,9 @@
 				$grp = new AndConditionGroup;
 				foreach($oldObjKeys as $oldObjKey)
 				{
+					if(stripos($oldObjKey, '.') == false && is_null($this->getProtectedValue($oldObj, $oldObjKey)))
+						continue;
+					
 					$grp->set(new Condition($oldObjKey, '=', ':o'.str_replace('.', '', $oldObjKey), FALSE));					
 				}
 				$stmt->where($grp);
@@ -418,7 +480,7 @@
 					throw new \Exception('Couldn\'t prepare statement in AbstractDBStorage.update');
 				}
 				
-				$binds = array_merge($this->generateBind($obj),$this->generateBind($oldObj, 'o'));
+				$binds = array_merge($this->generateBind($obj), $this->generateBind($oldObj, 'o', array(), TRUE, TRUE));
 						
 				if($this->isAggregate())
 				{
@@ -430,8 +492,6 @@
 					$nindex = ':'.$this->_table.'id';
 					$binds[$nindex] = $this->getProtectedValue($obj, 'id');
 				}
-				
-				var_dump($binds);
 				
 				if(!$statement->execute($binds))
 				{
@@ -458,8 +518,17 @@
 			{
 				if($filter instanceof StorageFilter)
 				{
-					$grp->set(new Condition($this->_table.'.'.$filter->getField(), $filter->getRelation(), ':'.$filter->getField(), FALSE));
-					$bind[':'.$filter->getField()] = $filter->getValue();
+					if (!strpos($filter->getField(), '.'))
+					{
+						$grp->set(new Condition($this->_table.'.'.$filter->getField(), $filter->getRelation(), ':'.$filter->getField(), FALSE));
+						$bind[':'.$filter->getField()] = $filter->getValue();
+					}
+					else 
+					{
+						$grp->set(new Condition($filter->getField(), $filter->getRelation(), ':'.str_replace('.','_',$filter->getField()), FALSE));
+						$bind[':'.str_replace('.','_',$filter->getField())] = $filter->getValue();
+					}
+					
 				}
 			}
 
@@ -512,9 +581,14 @@
 		 * 
 		 * @param Statement $stmt The statement to alter.
 		 */
-		private function addAggregates(Statement $stmt)
+		private function addAggregates(Statement $stmt, $invert = FALSE)
 		{
-			foreach($this->getMappings() as $mapping)
+			$mappings = $this->getMappings();
+			
+			if($invert)
+				$mappings = array_reverse($mappings);
+			
+			foreach($mappings as $mapping)
 			{	
 				foreach($mapping->getKeyRelations() as $relation)
 				{
@@ -681,4 +755,15 @@
 		{
 			return array();
 		}
+		
+		/**
+		 * Returns a new transaction.
+		 *
+		 * @return \org\legien\phuice\services\database\ITransaction
+		 */
+		public function createTransaction()
+		{
+			return $this->_connection->createTransaction();
+		}
+		
 	}
