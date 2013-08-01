@@ -244,7 +244,9 @@
 			foreach($objKeys as $objKey)
 			{
 				if(stripos($objKey, '.') == false && is_null($this->getProtectedValue($obj, $objKey)))
+				{
 					continue;
+				}
 				
 				$grp->set(new Condition($objKey, '=', ':'.str_replace('.', '', $objKey), FALSE));
 			}
@@ -469,7 +471,9 @@
 				foreach($oldObjKeys as $oldObjKey)
 				{
 					if(stripos($oldObjKey, '.') == false && is_null($this->getProtectedValue($oldObj, $oldObjKey)))
+					{
 						continue;
+					}
 					
 					$grp->set(new Condition($oldObjKey, '=', ':o'.str_replace('.', '', $oldObjKey), FALSE));					
 				}
@@ -586,7 +590,9 @@
 			$mappings = $this->getMappings();
 			
 			if($invert)
+			{
 				$mappings = array_reverse($mappings);
+			}
 			
 			foreach($mappings as $mapping)
 			{	

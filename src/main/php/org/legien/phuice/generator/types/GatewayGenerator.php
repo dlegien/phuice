@@ -140,9 +140,7 @@
 		 * @return	GatewayGenerator		this
 		 */		
 		public function setClass($gatewayName, $namespace, $modelClass, $indexes = array())
-		{
-			$modelName = $modelClass->getFullQualifiedName();
-			
+		{			
 			// Prepare the name of the class
 			$gatewayName = $this->getGatewayName($gatewayName);
 			
@@ -158,35 +156,8 @@
 				->setDependency(new Dependency($this->baseGatewayNamespace))
 				->setDependency(new Dependency($this->filterNamespace))
 				->setDependency(new Dependency($this->orderingNamespace))
-				// ->setImplements('\api\DataAbstraction\DataGatewayInterface')
 			;
-			/*
-			// Set the fields
-			$class->setField(new Field(
-				'connection',
-				'PDOService',
-				'The database connection.',
-				'protected'
-			));
 			
-			$class->setField(new Field(
-				'table',
-				'string',
-				'The table that holds the information.',
-				'protected'
-			));
-			
-			$class->setField(new Field(
-				'modelName',
-				'string',
-				'The name of the gateway\'s model.',
-				'protected',
-				$modelName
-			));			
-
-			// Compose the required methods
-			$class->setMethod($this->composeConstructorMethod());						
-			*/
 			foreach($indexes as $index)
 			{
 				$parameters = array();
@@ -214,25 +185,6 @@
 			$this->classes[$gatewayName] = $class;
 			
 			return $this;		
-		}
-		
-		/**
-		 * Composes the constructor method for the standard gateway.
-		 * 
-		 * @return	Method
-		 */
-		private function composeConstructorMethod()
-		{
-			// Compose the constructor method
-			return new Method('__construct', 
-				array(
-					new Parameter('connection', ''),
-					new Parameter('table', 'string')
-				),
-				NULL, 
-				'$this->connection = $connection;' . PHP_EOL . '$this->table = $table;', 
-				'Constructor for the Gateway class'
-			);	
 		}
 		
 		/**

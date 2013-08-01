@@ -64,9 +64,11 @@
 		{			
 			$translation = $this->getStorage()->findTranslationByPlaceholder($string);
 			
+			$i = 0;
 			foreach($args as $value)
 			{
-				$translation = str_replace('{'.$i++.'}', $value, $translation);
+				$translation = str_replace('{'.$i.'}', $value, $translation);
+				$i++;
 			}
 			
 			return $translation;
