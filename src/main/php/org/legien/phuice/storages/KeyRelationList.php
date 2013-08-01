@@ -89,7 +89,12 @@
 		 */
 		public function current()
 		{
-			return $this->_relations[$this->_position];
+			if (isset($this->_relations[$this->_position]))
+			{
+				return $this->_relations[$this->_position];
+			}
+			
+			return NULL;
 		}
 		
 		/**
