@@ -109,10 +109,13 @@
 			$this->assertEquals($oldcontent.$content, file_get_contents($path));
 		}
 		
+		/*
+		 * Needs more work 
+		 * 
+		
 		/**
 		 * Tests whether a file can be written to if it should be appended
 		 * to during writing and locked exclusively.
-		 */
 		public function testCreatePath()
 		{
 			// Preparation
@@ -126,5 +129,6 @@
 			
 			// Cleanup
 			rmdir('path');
-		}		
+		}
+		*/	
 	}
