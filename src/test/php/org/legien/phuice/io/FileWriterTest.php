@@ -85,5 +85,46 @@
 			// Verification
 			$this->assertFileExists($path);
 			$this->assertEquals($oldcontent.$content, file_get_contents($path));
+		}
+
+		/**
+		 * Tests whether a file can be written to if it should be appended
+		 * to during writing and locked exclusively.
+		 */
+		public function testAppendAndLock()
+		{
+			// Preparation
+			$writer = new FileWriter();
+			$writer->setAppend(TRUE);
+			$writer->setLockExclusively(TRUE);
+			$path = 'src/test/resources/tmp/bla.txt';
+			$oldcontent = file_get_contents($path);
+			$content = uniqid();
+		
+			// Test
+			$writer->write($path, $content);
+		
+			// Verification
+			$this->assertFileExists($path);
+			$this->assertEquals($oldcontent.$content, file_get_contents($path));
+		}
+		
+		/**
+		 * Tests whether a file can be written to if it should be appended
+		 * to during writing and locked exclusively.
+		 */
+		public function testCreatePath()
+		{
+			// Preparation
+			$writer = new FileWriter();
+		
+			// Test
+			$writer->createPath('path');
+			
+			// Assertions
+			$this->assertFileExists('path');
+			
+			// Cleanup
+			rmdir('path');
 		}		
 	}
