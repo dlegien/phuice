@@ -60,9 +60,16 @@
 		 * 
 		 * @param boolean $append Whether to append to a file.
 		 */
-		private function setAppend($append)
+		public function setAppend($append)
 		{
-			$this->_append = $append;
+			if ($append === TRUE)
+			{
+				$this->_append = TRUE;
+			}
+			else 
+			{
+				$this->_append = FALSE;
+			}
 		}
 		
 		/**
@@ -70,9 +77,16 @@
 		 * 
 		 * @param boolean $lock Whether to lock the file exclusively.
 		 */
-		private function setLockExclusively($lock)
+		public function setLockExclusively($lock)
 		{
-			$this->_lockExclusively = $lock;
+			if ($lock === TRUE)
+			{
+				$this->_lockExclusively = TRUE;
+			}
+			else
+			{
+				$this->_lockExclusively = FALSE;
+			}
 		}
 		
 		/**
@@ -150,7 +164,7 @@
 				throw new FileNotFoundException($resourceName . ' not found.');
 			}
 			
-			if($flags = $this->getFlags() !== FALSE)
+			if(($flags = $this->getFlags()) !== FALSE)
 			{
 				file_put_contents($resourceName, $content, $flags);
 			}

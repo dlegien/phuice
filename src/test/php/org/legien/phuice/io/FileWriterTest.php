@@ -28,4 +28,62 @@
 			$this->assertFileExists($path);
 			$this->assertEquals($content, file_get_contents($path));
 		}
+		
+		/**
+		 * Tests if a FileNotFoundException is thrown if the file does
+		 * not exist.
+		 * 
+		 * @expectedException org\legien\phuice\io\FileNotFoundException
+		 */
+		public function testWriteException()
+		{
+			// Preparation
+			$writer = new FileWriter();
+			$content = uniqid();
+			$path = 'bogus.bla';
+			
+			// Test
+			$writer->write($path, $content);
+		}
+		
+		/**
+		 * Tests whether a file can be written to if it should be locked
+		 * exclusively during writing.
+		 */
+		public function testLockExclusively()
+		{
+			// Preparation
+			$writer = new FileWriter();
+			$writer->setLockExclusively(TRUE);
+			$content = uniqid();
+			$path = 'src/test/resources/tmp/bla.txt';
+				
+			// Test
+			$writer->write($path, $content);
+
+			// Verification
+			$this->assertFileExists($path);
+			$this->assertEquals($content, file_get_contents($path));
+		}
+		
+		/**
+		 * Tests whether a file can be written to if it should be appended
+		 * to during writing.
+		 */		
+		public function testAppend()
+		{
+			// Preparation
+			$writer = new FileWriter();
+			$writer->setAppend(TRUE);
+			$path = 'src/test/resources/tmp/bla.txt';
+			$oldcontent = file_get_contents($path);
+			$content = uniqid();
+		
+			// Test
+			$writer->write($path, $content);
+		
+			// Verification
+			$this->assertFileExists($path);
+			$this->assertEquals($oldcontent.$content, file_get_contents($path));
+		}		
 	}
