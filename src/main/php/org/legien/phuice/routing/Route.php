@@ -122,7 +122,6 @@
 		{			
 			$parameterNames = array();
 			preg_match_all('@:([\w]+)@', $this->route, $parameterNames, PREG_PATTERN_ORDER);
-			
 			if(strpos($this->route, '*') !== FALSE)
 			{
 				$this->route = str_replace('*', '(.*)', $this->route);				
@@ -238,6 +237,6 @@
 		 */
 		private function regex($matches) 
 		{
-			return '([a-zA-Z0-9_\+\-\=\.\/%]+)';
+			return '([a-zA-Z0-9_\+\-\=\.%]+)';
 		}
 	}

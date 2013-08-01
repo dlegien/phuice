@@ -84,7 +84,7 @@
 		public function prepare(Statement $statement)
 		{
 			$sql = $this->getEvaluator()->evaluate($statement);
-			var_dump($sql);
+			
 			$pdoStatement = $this->getConnection()->prepare($sql);
 			if($pdoStatement)
 			{

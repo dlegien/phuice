@@ -344,7 +344,9 @@
 			$TABLES = $this->evaluateTables($statement);
 			$TABLES .= $this->evaluateJoins($statement);
 			$WHERE = $this->evaluateWhere($statement);	
-						
+
+			$FIELDS = $FIELDS == '*' ? '' : $FIELDS;
+			
 			return
 				'DELETE ' . $FIELDS .' FROM '. $TABLES .
 				$WHERE;

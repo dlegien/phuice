@@ -70,4 +70,17 @@
 			}
 			return NULL;
 		}
+		
+		
+		/**
+		 * Returns a set of parameters if there are any
+		 * NULL otherwise.
+		 *
+		 *
+		 * @return mixed
+		 */
+		public function getParameters()
+		{
+			return $this->_parameters;
+		}
 	}
