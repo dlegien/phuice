@@ -36,21 +36,21 @@
 		 * 
 		 * @var bool
 		 */
-		private $isMatched = FALSE;
+		protected $isMatched = FALSE;
 		
 		/**
 		 * Whether the route was processed.
 		 * 
 		 * @var bool
 		 */
-		private $isProcessed = FALSE;
+		protected $isProcessed = FALSE;
 		
 		/**
 		 * A text representation of the route.
 		 * 
 		 * @var string
 		 */
-		private $route;
+		protected $route;
 		
 		/**
 		 * The target of the route. The definition of the controller
@@ -58,7 +58,7 @@
 		 * 
 		 * @var array
 		 */
-		private $target;
+		protected $target;
 		
 		/**
 		 * Conditions that have to be met in order for the routing
@@ -66,7 +66,7 @@
 		 * 
 		 * @var array
 		 */
-		private $conditions;
+		protected $conditions;
 		
 		/**
 		 * Parameters of the route that will be used when calling
@@ -74,7 +74,7 @@
 		 * 
 		 * @var array
 		 */
-		private $parameters;
+		protected $parameters;
 
 		/**
 		 * Initializes a new Route.
@@ -161,7 +161,7 @@
 		 * 
 		 * @param bool 	$matched 	Whether the route matched.
 		 */
-		private function setMatched($matched) 
+		protected function setMatched($matched) 
 		{
 			$this->isMatched = $matched;
 		}
@@ -171,7 +171,7 @@
 		 * 
 		 * @param bool	$processed	Whether the route was processed.
 		 */
-		private function setProcessed($processed) 
+		protected function setProcessed($processed) 
 		{
 			$this->isProcessed = $processed;
 		}
@@ -235,7 +235,7 @@
 		 * @param array 	$matches	The matches of the search.
 		 * @return string
 		 */
-		private function regex($matches) 
+		protected function regex($matches) 
 		{
 			return '([a-zA-Z0-9_\+\-\=\.%]+)';
 		}
