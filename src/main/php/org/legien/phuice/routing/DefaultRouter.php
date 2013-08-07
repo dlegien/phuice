@@ -56,12 +56,13 @@
 		 */
 		public function route($path) 
 		{	
+			$matched = FALSE;
+			
 			foreach($this->getRoutes() as $route) 
 			{
 				$route->matchWith($path);
 				if($route->isMatched()) 
 				{
-
 					$controller = $route->getParameter('controller');
 					$method = $route->getParameter('method');
 
@@ -74,7 +75,14 @@
 					{
 						throw new RoutingException('The called method does not exist.');
 					}
+					
+					$matched = TRUE;
 				}
+			}
+			
+			if (!$matched)
+			{
+				throw new NoMatchingRouteException();
 			}
 		}
 
