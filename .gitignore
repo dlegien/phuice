@@ -1,4 +1,5 @@
 target/
 build/logs
+build/coverage
 build/backup
 .DS_Store

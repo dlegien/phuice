@@ -57,6 +57,14 @@
 		 * @var string
 		 */
 		private $language;
+		
+		
+		/**
+		 * The state of the system user (active or inactive).
+		 *
+		 * @var boolean
+		 */
+		private $active;
 
 		/**
 		 * Sets the username of the system user.
@@ -136,5 +144,26 @@
 		public function getLanguage() 
 		{
 			return $this->language;
+		}
+		
+		
+		/**
+		 * Sets the active flag.
+		 *
+		 * @param boolean $active.	The state.
+		 */
+		public function setActive($active)
+		{
+			$this->active = $active;
+		}
+		
+		/**
+		 * Returns the state of the system user.
+		 *
+		 * @return boolean
+		 */
+		public function isActive()
+		{
+			return $this->active;
 		}
 	}

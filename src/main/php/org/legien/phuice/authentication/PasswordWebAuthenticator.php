@@ -160,10 +160,9 @@
 		public function authenticate($username, $password, $redirect) 
 		{
 			$gateway = $this->getGateway();
-		
 			if($user = $gateway->findByUsername($username)) 
 			{
-				if($this->verifyPassword($user->getPassword(), $password)) 
+				if($user->isActive() && $this->verifyPassword($user->getPassword(), $password)) 
 				{
 					$this->getSessionManager()->startSession($user->getId(), time());
 					$this->getSessionManager()->setLanguage($user->getLanguage());
