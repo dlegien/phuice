@@ -81,15 +81,22 @@
 		 * (non-PHPdoc)
 		 * @see \org\legien\phuice\mvc\AbstractController::renderView()
 		 */
-		public function renderView() 
+		public function renderView($noCheck = false) 
 		{
-			if($this->getAuthenticator()->isAuthenticated()) 
+			if (!$noCheck)
+			{
+				if($this->getAuthenticator()->isAuthenticated()) 
+				{
+					parent::renderView();
+				}
+				else 
+				{
+					$this->getAuthenticator()->showAuthentication();
+				}
+			}
+			else
 			{
 				parent::renderView();
-			}
-			else 
-			{
-				$this->getAuthenticator()->showAuthentication();
 			}
 		}
 

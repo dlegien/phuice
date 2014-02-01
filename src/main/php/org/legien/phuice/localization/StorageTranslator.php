@@ -62,7 +62,7 @@
 		 */
 		public function translate($string, $args = array()) 
 		{
-			$translation = $this->getStorage()->findTranslationByPlaceholder($string);
+			$translation = utf8_encode($this->getStorage()->findTranslationByPlaceholder($string));
 				
 			$i=1;
 			foreach($args as $value)

@@ -137,6 +137,10 @@
 		 */				
 		private function evaluateTables(Statement $statement)
 		{
+			if ($statement->getTables() instanceof Statement)
+			{
+				return '(' . $this->evaluateSelect($statement->getTables(), 1). ') tableAux';
+			}
 			return $statement->getTables();
 		}
 		
@@ -175,6 +179,26 @@
 				$where .= ' '.$this->getJoin($join[2]).' JOIN '.$join[0].' ON '.$join[1];
 			}
 			return $where;
+		}
+		
+		
+		/**
+		 * Evalutes the unions of the provided Statement.
+		 *
+		 * @param	Statement	$statement	The Statement the evaluation should be
+		 * 									based on
+		 *
+		 * @return	string
+		 */
+		private function evaluateUnions(Statement $statement)
+		{
+			$union = '';
+		
+			foreach($statement->getUnions() as  $index => $unionStatement)
+			{
+				$union .= ' UNION (' . $this->evaluateSelect($unionStatement, $index + 2) . ')';
+			}
+			return $union;
 		}
 				
 		/**
@@ -255,7 +279,7 @@
 		 */
 		private function evaluateGroupBy(Statement $statement)
 		{
-			return $statement->hasGroupBy() ? implode(',', $statement->getGroupBy()) : '';
+			return $statement->hasGroupBy() ? ' GROUP BY ' . implode(',', $statement->getGroupBy()) : '';
 		}
 		
 		/**
@@ -266,7 +290,7 @@
 		 * 
 		 * @return 	string
 		 */
-		private function evaluateSelect(Statement $statement)
+		private function evaluateSelect(Statement $statement, $unionId = false)
 		{
 			$FIELDS = $this->evaluateWhat($statement);
 			$TABLES = $this->evaluateTables($statement);
@@ -276,13 +300,19 @@
 			$HAVING = $this->evaluateHaving($statement);
 			$ORDERBY = $this->evaluateOrdering($statement);
 			$LIMIT = $this->evaluateLimit($statement);
-						
+			$UNION = $this->evaluateUnions($statement);
+			
+			$unionString = '';
+			if ($unionId > 0){
+				$unionString = $unionId.' AS  rank,';
+			}
 			return 			
-				'SELECT ' . $FIELDS . 
-				' FROM '. $TABLES . 
-				$WHERE .
-				$GROUPBY .
-				$HAVING .
+				'SELECT '. $unionString . $FIELDS .
+				' FROM '. $TABLES .
+				$WHERE . 
+				$UNION .
+				$GROUPBY . 
+				$HAVING . 
 				$ORDERBY .
 				$LIMIT 
 			;			

@@ -38,16 +38,24 @@
 		 */
 		public function hashPassword($password, $salt = NULL) 
 		{
+			return $this->hashString($password, $salt);
+		}
+		
+		/**
+		 * (non-PHPdoc)
+		 * @see \org\legien\phuice\authentication\HashWrapper::hashPassword()
+		 */
+		public function hashString($string, $salt = NULL) 
+		{
 			if(!is_null($salt)) 
 			{
-				return crypt($password, $salt);	
+				return crypt($string, $salt);	
 			}
 			else 
 			{
-				return crypt($password);
+				return crypt($string);
 			}
 		}
-		
 		/**
 		 * (non-PHPdoc)
 		 * @see \org\legien\phuice\authentication\HashWrapper::verifyPassword()

@@ -47,7 +47,9 @@
 		{
 			parent::__construct($connection, $table, $model);
 			$sessionLanguage = $sessionManager->getLanguage();
-			$this->setLanguage(is_null($sessionLanguage) ? $language : $sessionLanguage);			
+			$this->setLanguage(is_null($sessionLanguage) ? $language : $sessionLanguage);
+
+			$this->apcSupport = extension_loaded('apc') && ini_get('apc.enabled');
 		}
 
 		/**
@@ -76,12 +78,19 @@
 		 */
 		public function findTranslationByPlaceholder($string) 
 		{
-			if($translation = parent::find(array(
+			//try to load from cache
+			if($this->apcSupport && $translation = apc_fetch( 'DictionaryStorage_' . $this->getLanguage() . '_' . $string ) ) {
+				return $translation->getTranslation();
+			} else if($translation = parent::find(array(
 					new StorageFilter('placeholder', '=', $string),
 					new StorageFilter('language', '=', $this->getLanguage())
 			))) {
+				if($this->apcSupport)
+					apc_store('DictionaryStorage_' . $this->getLanguage() . '_' . $string, $translation);
+
 				return $translation->getTranslation();	
 			}
+
 			return $string;
 		}
 	}

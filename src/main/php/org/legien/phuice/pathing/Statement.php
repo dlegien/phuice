@@ -34,6 +34,7 @@
 		private $_havings = NULL;
 		private $_sets = array();
 		private $_groupby = array();
+		private $_unions = array();
 		
 		public static $LEFT_JOIN = 0;
 		public static $RIGHT_JOIN = 1;
@@ -313,6 +314,10 @@
 		
 		public function getJoins() {
 			return $this->_joins;
+		}
+
+		public function getUnions() {
+			return $this->_unions;
 		}
 		
 		public function getWhere() {

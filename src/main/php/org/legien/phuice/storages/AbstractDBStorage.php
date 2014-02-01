@@ -24,6 +24,7 @@
 	use org\legien\phuice\pathing\Statement;
 	use org\legien\phuice\pathing\Condition;
 	use org\legien\phuice\pathing\AndConditionGroup;
+	use org\legien\phuice\pathing\ConditionGroup;
 
 	/**
 	 * An abstract storage that reduces the necessary implementations in
@@ -306,7 +307,7 @@
 		 * @param string	$key	The name of the property.
 		 * @param mixed		$value	The value to set.
 		 */
-		private function setProtectedValue(&$to, $key, $value)
+		protected function setProtectedValue(&$to, $key, $value)
 		{
 			$toObject = new \ReflectionObject($to);
 				
@@ -324,7 +325,7 @@
 		 * 
 		 * @return mixed
 		 */
-		private function getProtectedValue($from, $key)
+		protected function getProtectedValue($from, $key)
 		{
 			$fromObject = new \ReflectionObject($from);				
 			$fromProperty = $fromObject->getProperty($key);
@@ -446,8 +447,7 @@
 				
 				$stmt = new Statement;
 				
-				$stmt
-					->update($this->_table);
+				$stmt->update($this->_table);
 				
 				if($this->isAggregate())
 				{
@@ -470,12 +470,29 @@
 				$grp = new AndConditionGroup;
 				foreach($oldObjKeys as $oldObjKey)
 				{
+					
 					if(stripos($oldObjKey, '.') == false && is_null($this->getProtectedValue($oldObj, $oldObjKey)))
 					{
 						continue;
 					}
 					
-					$grp->set(new Condition($oldObjKey, '=', ':o'.str_replace('.', '', $oldObjKey), FALSE));					
+					$val = null;
+					if (stripos($oldObjKey, '.') == false) 
+					{
+						$val = $this->getProtectedValue($oldObj, $oldObjKey);
+					}
+
+					//var_dump($val);
+					$key = $oldObjKey;
+					$bind = ':o'.str_replace('.', '', $oldObjKey);
+
+					if ($val && is_numeric( $val ) && floor( $val ) != $val)
+					{
+						$key = 'CAST('.$key.' AS DECIMAL)';
+						$bind = 'CAST(:o'.str_replace('.', '', $oldObjKey).' AS DECIMAL)';
+					}
+
+					$grp->set(new Condition($key, '=', $bind, FALSE));
 				}
 				$stmt->where($grp);
 				
@@ -485,7 +502,8 @@
 				}
 				
 				$binds = array_merge($this->generateBind($obj), $this->generateBind($oldObj, 'o', array(), TRUE, TRUE));
-						
+			
+
 				if($this->isAggregate())
 				{
 					unset($binds[':oid']);
@@ -502,7 +520,8 @@
 					$this->_connection->catchError($stmt, $statement);
 				}
 				
-				return TRUE;				
+				return TRUE;
+
 			}
 			return FALSE;
 		}
@@ -517,25 +536,37 @@
 		private function processFilters(&$bind, &$stmt, $filters)
 		{		
 			$grp = new AndConditionGroup;
-					
+			$ascii = 97; //ascii number 97 = 'a'
 			foreach($filters as $filter)
 			{
 				if($filter instanceof StorageFilter)
 				{
+					$bindKey = $filter->getField();
+					if (isset($bind[':'.$bindKey]) || isset($bind[':'.str_replace('.','_',$bindKey)]))
+					{
+						$bindKey.= '__'.chr($ascii);
+						$ascii++;
+					}
 					if (!strpos($filter->getField(), '.'))
 					{
-						$grp->set(new Condition($this->_table.'.'.$filter->getField(), $filter->getRelation(), ':'.$filter->getField(), FALSE));
-						$bind[':'.$filter->getField()] = $filter->getValue();
+						$grp->set(new Condition($this->_table.'.'.$filter->getField(), $filter->getRelation(), ':'.$bindKey, FALSE));
+						$bind[':'.$bindKey] = $filter->getValue();
 					}
 					else 
 					{
-						$grp->set(new Condition($filter->getField(), $filter->getRelation(), ':'.str_replace('.','_',$filter->getField()), FALSE));
-						$bind[':'.str_replace('.','_',$filter->getField())] = $filter->getValue();
+						$grp->set(new Condition($filter->getField(), $filter->getRelation(), ':'.str_replace('.','_',$bindKey), FALSE));
+						$bind[':'.str_replace('.','_',$bindKey)] = $filter->getValue();
 					}
-					
+				}
+				else
+				{
+					if($filter instanceof ConditionGroup)
+					{
+						$grp->set($filter);
+					}
 				}
 			}
-
+			
 			if(count($filters) > 0)
 			{
 				$stmt->where($grp);
@@ -588,7 +619,7 @@
 		private function addAggregates(Statement $stmt, $invert = FALSE)
 		{
 			$mappings = $this->getMappings();
-			
+						
 			if($invert)
 			{
 				$mappings = array_reverse($mappings);
@@ -615,13 +646,18 @@
 		 * 
 		 * @return mixed
 		 */
-		protected function find(array $filters = array(), array $orderBy = array(), $set = FALSE)
+		protected function find(array $filters = array(), array $orderBy = array(), $set = FALSE, $limit = false)
 		{
 			$bind = array();
-			$stmt = $this->createFindStatement();						
+			$stmt = $this->createFindStatement();
 			$this->processFilters($bind, $stmt, $filters);
 			$this->processOrderings($stmt, $orderBy);
-						
+			
+			if ($limit)
+			{
+				$stmt->limit($limit[0], $limit[1]);
+			}
+
 			return $this->performStatement($bind, $stmt, $set);
 		}
 
@@ -637,11 +673,23 @@
 		 */
 		private function performStatement($bind, $stmt, $set) 
 		{
+
 			if(!$statement = $this->_connection->prepare($stmt))
 			{
 				throw new \Exception('Couldn\'t prepare statement.');
 			}
 
+			/*
+			if ($stmt->getTables() == "fluid_container_process_action")
+			{
+				$stringStmnt = $statement->queryString;
+				foreach ($bind as $key => $value)
+				{
+					$stringStmnt = str_replace($key, $value, $stringStmnt);
+				}
+				echo $stringStmnt;
+			}
+			*/
 			if(count($bind) > 0) 
 			{
 				if(!$statement->execute($bind)) 
@@ -653,7 +701,7 @@
 					catch(\Exception $e) 
 					{
 						throw new \Exception('AbstractDBStorage.create: ' . $e->getMessage() . '. Couldn\'t execute statement '.$stmt.' with ' . implode(', ',$bind));
-					}					
+					}	
 				}
 			}
 			else 
@@ -672,7 +720,16 @@
 			}
 			
 			if($set)
-			{
+			{	
+				/*
+				if ($stmt->getTables() == "fluid_container_process_action")
+				{
+					echo '<br><br>'.$statement->queryString;
+					//var_dump($this->_modelname);
+					//var_dump($objects);
+				}
+				*/
+
 				$objects = $statement->fetchAll(\PDO::FETCH_CLASS, $this->_modelname);
 				foreach($objects as $newobject)
 				{
@@ -696,9 +753,9 @@
 		 * @param array $filters The filters to apply.
 		 * @param array $orderBy The orderings to apply.
 		 */
-		public function findAll(array $filters = array(), array $orderBy = array())
+		public function findAll(array $filters = array(), array $orderBy = array(), $limit = false)
 		{
-			return $this->find($filters, $orderBy, TRUE);
+			return $this->find($filters, $orderBy, TRUE, $limit);
 		}
 
 		/**
@@ -711,12 +768,17 @@
 		 * @return array
 		 */
 		public function findCustom(Statement $stmt)
-		{							
+		{				
+			if($this->isAggregate())
+			{
+				$this->addAggregates($stmt);
+			}
+			
 			if(!$statement = $this->_connection->prepare($stmt))
 			{
 				throw new \Exception('AbstractDBStorage.findCustom(): Couldn\'t prepare statement');
 			}
-						
+			//echo $statement->queryString.'<br><br>';
 			if(!$statement->execute())
 			{
 				try
