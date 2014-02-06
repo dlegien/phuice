@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <buildpath>
+	<buildpathentry kind="lib" path="doctrine-2.2.3.phar"/>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
 	<buildpathentry kind="lib" path="phpunit.phar"/>
 	<buildpathentry kind="src" path=""/>

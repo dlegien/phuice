@@ -1,2 +1,2 @@
 eclipse.preferences.version=1
-include_path=1;/phuice/phpunit.phar
+include_path=1;/phuice/phpunit.phar\u00051;/phuice/doctrine-2.2.3.phar
