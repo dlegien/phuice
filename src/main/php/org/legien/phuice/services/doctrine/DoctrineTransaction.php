@@ -21,7 +21,7 @@
 		 * @param \PDO $connection The connection object.
 		 */
 		public function __construct(Connection $connection)
-		{
+		{			
 			$this->setConnection($connection);
 		}
 		

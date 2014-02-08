@@ -154,7 +154,7 @@
 		 * (non-PHPdoc)
 		 * @see \org\legien\phuice\storages\IAbstractStorage::create()
 		 */
-		public function create($entity)
+		public function create($entity, $nesting = TRUE)
 		{
 			$this->getEntityManager()->persist($entity);
 		}
@@ -184,7 +184,7 @@
 		 * (non-PHPdoc)
 		 * @see \org\legien\phuice\storages\IAbstractStorage::findAll()
 		 */
-		public function findAll()
+		public function findAll(array $filters = array(), array $orderby = array(), $limit = false)
 		{
 			return $this->getEntityManager()->getRepository($this->getEntityName())->findAll();
 		}

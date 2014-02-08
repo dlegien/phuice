@@ -2,6 +2,8 @@
 
 	namespace org\legien\phuice\storages;
 	
+	use org\legien\phuice\pathing\Statement;
+	
 	/**
 	 * An abstract storage for persisting models to the database.
 	 * 
