@@ -64,7 +64,7 @@
 		 * @param StatementEvaluator $statementEvaluator The Phuice Statement Evaluator.
 		 * @param string $entityName The name of the storage's entity.
 		 */
-		public function __construct(EntityManager $entityManager, StatementEvaluator $statementEvaluator, $entityName)
+		public function __construct(IDoctrineEntityManagerWrapper $entityManager, StatementEvaluator $statementEvaluator, $entityName)
 		{
 			$this->setEntityManager($entityManager);
 			$this->setEntityName($entityName);
@@ -84,9 +84,9 @@
 		/**
 		 * Sets the Doctrine Entity Manager.
 		 * 
-		 * @param EntityManager $entityManager The Doctrine Entity Manager
+		 * @param IDoctrineEntityManagerWrapper $entityManager The Doctrine Entity Manager
 		 */
-		private function setEntityManager($entityManager)
+		private function setEntityManager(IDoctrineEntityManagerWrapper $entityManager)
 		{
 			$this->_entityManager = $entityManager;
 		}
@@ -165,7 +165,7 @@
 		 */		
 		public function update($entity)
 		{
-			$this->getEntityManager()->flush($entity);
+			$this->getEntityManager()->update($entity);
 			return TRUE;
 		}
 		
@@ -195,7 +195,7 @@
 		 */
 		public function createTransaction()
 		{
-			return new DoctrineTransaction($this->getEntityManager()->getConnection());
+			return $this->getEntityManager()->createTransaction();
 		}
 		
 		/**
