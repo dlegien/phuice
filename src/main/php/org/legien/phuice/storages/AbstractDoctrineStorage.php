@@ -186,7 +186,56 @@
 		 */
 		public function findAll(array $filters = array(), array $orderby = array(), $limit = false)
 		{
-			return $this->getEntityManager()->getRepository($this->getEntityName())->findAll();
+			$repository = $this->getEntityManager()->getRepository($this->getEntityName());
+			
+			$queryBuilder = $repository->createQueryBuilder('u');
+			
+			if (count($filters) > 0 || count($orderby) > 0 || $limit != false)
+			{
+				if (count($filters) > 0)
+				{
+					$firstFilter = $filters[0];
+				
+					$queryBuilder
+						->where('u.' . $firstFilter->getField() . ' ' . $firstFilter->getRelation() . ' ?1');
+				
+					$queryBuilder->setParameter(1, $firstFilter->getValue());
+				
+					if (count($filters > 1))
+					{
+						for ($i=1; $i<count($filters); $i++)
+						{
+							$queryBuilder
+								->andWhere($filters[$i]->getField() . ' ' . $filters[i]->getRelation(). ' ?');
+						
+							$queryBuilder->setParameter($i+1, $filters[$i]->getValue());
+						}
+					}
+				}
+
+				if (count($orderby) > 0)
+				{
+					foreach ($orderby as $ordering)
+					{
+						$queryBuilder
+							->orderBy('u.' . $ordering->getField(), $ordering->getDirection());
+					}	
+				}
+				
+				if ($limit)
+				{
+					$queryBuilder
+						->setFirstResult($limit[0])
+						->setMaxResults($limit[1]);
+				}
+				
+				$query = $queryBuilder->getQuery();
+				return $query->getArrayResult();
+			}
+			else
+			{
+				return $this->getEntityManager()->getRepository($this->getEntityName())->findAll();
+			}
 		}
 		
 		/**
