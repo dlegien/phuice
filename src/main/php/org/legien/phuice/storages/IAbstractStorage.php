@@ -50,9 +50,10 @@
 		 *
 		 * @param array $filters The filters to apply.
 		 * @param array $orderBy The orderings to apply.
+		 * @param array $limit The offset and max result for the query.
 		 */
 		public function findAll(array $filters = array(), array $orderBy = array(), $limit = false);
-		
+				
 		/**
 		 * Performs a search using the given statement. This allows for
 		 * additional flexibility.
