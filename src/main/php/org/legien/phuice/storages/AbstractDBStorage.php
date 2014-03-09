@@ -130,11 +130,22 @@
 			if($obj !== FALSE) 
 			{
 				$oldObj = unserialize(serialize($obj));
+
 				$hash = spl_object_hash($oldObj);
 				
 				$this->_cache[$hash] = $oldObj;
 				$obj->objhashentry = $hash;
 			}
+		}
+
+		protected function unsetCache()
+		{
+			//when calling this be sure what you are doing!
+			foreach($this->_cache as $key => $value) {
+				unset($this->_cache[$key]);
+			}
+			unset($this->_cache);
+			$this->_cache = array();
 		}
 		
 		/**
@@ -679,17 +690,6 @@
 				throw new \Exception('Couldn\'t prepare statement.');
 			}
 
-			/*
-			if ($stmt->getTables() == "fluid_container_process_action")
-			{
-				$stringStmnt = $statement->queryString;
-				foreach ($bind as $key => $value)
-				{
-					$stringStmnt = str_replace($key, $value, $stringStmnt);
-				}
-				echo $stringStmnt;
-			}
-			*/
 			if(count($bind) > 0) 
 			{
 				if(!$statement->execute($bind)) 
@@ -721,15 +721,6 @@
 			
 			if($set)
 			{	
-				/*
-				if ($stmt->getTables() == "fluid_container_process_action")
-				{
-					echo '<br><br>'.$statement->queryString;
-					//var_dump($this->_modelname);
-					//var_dump($objects);
-				}
-				*/
-
 				$objects = $statement->fetchAll(\PDO::FETCH_CLASS, $this->_modelname);
 				foreach($objects as $newobject)
 				{
@@ -769,6 +760,23 @@
 		 */
 		public function findCustom(Statement $stmt)
 		{				
+			$statement = $this->prepareAndExecuteStatement($stmt, 'findCustom');
+			$objects = $statement->fetchAll(\PDO::FETCH_CLASS, $this->_modelname);
+			foreach($objects as $newobject)
+			{
+				$this->cacheObject($newobject);
+			}
+			return $objects;
+		}
+		
+
+		public function updateCustom(Statement $stmt)
+		{
+			$this->prepareAndExecuteStatement($stmt, 'updateCustom');
+		}
+
+		private function prepareAndExecuteStatement(Statement $stmt, $function)
+		{
 			if($this->isAggregate())
 			{
 				$this->addAggregates($stmt);
@@ -776,9 +784,8 @@
 			
 			if(!$statement = $this->_connection->prepare($stmt))
 			{
-				throw new \Exception('AbstractDBStorage.findCustom(): Couldn\'t prepare statement');
+				throw new \Exception('AbstractDBStorage.'.$function.'(): Couldn\'t prepare statement');
 			}
-			//echo $statement->queryString.'<br><br>';
 			if(!$statement->execute())
 			{
 				try
@@ -787,13 +794,11 @@
 				}
 				catch(\Exception $e)
 				{
-					throw new \Exception('AbstractDBStorage.create: ' . $e->getMessage() . '. Couldn\'t execute statement '.$stmt);	
+					throw new \Exception('AbstractDBStorage.'.$function.': ' . $e->getMessage() . '. Couldn\'t execute statement '.$stmt);	
 				}				
 			}
-
-			return $statement->fetchAll(\PDO::FETCH_CLASS, $this->_modelname);
+			return $statement;
 		}
-		
 		/**
 		 * Sets whether the storage is an aggregate storage.
 		 * 
@@ -832,6 +837,16 @@
 		public function createTransaction()
 		{
 			return $this->_connection->createTransaction();
+		}
+
+		public function getTable()
+		{
+			return $this->_table;
+		}
+
+		public function getConnection()
+		{
+			return $this->_connection;
 		}
 		
 	}

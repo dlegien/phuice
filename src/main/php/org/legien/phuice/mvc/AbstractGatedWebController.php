@@ -72,7 +72,7 @@
 		 * 
 		 * @return WebAuthenticator
 		 */
-		private function getAuthenticator() 
+		protected function getAuthenticator() 
 		{
 			return $this->_authenticator;
 		}

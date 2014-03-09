@@ -159,10 +159,10 @@
 		 */
 		public function write($resourceName, $content)
 		{
-			if(!file_exists($resourceName))
+			/*if(!file_exists($resourceName))
 			{
 				throw new FileNotFoundException($resourceName . ' not found.');
-			}
+			}*/
 			
 			if(($flags = $this->getFlags()) !== FALSE)
 			{

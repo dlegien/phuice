@@ -59,9 +59,19 @@
 			}
 		}
 
-		public function startSession($uid, $timestamp) {
+		public function startSession($uid, $sessid, $timestamp) {
+			//## uncomment the following lines to make the "one person at a time is logged in" working ##
+			if($sessid) {
+				session_id($sessid);
+				@session_start();
+				session_destroy();	
+			}
 			@session_start();
+			//## uncomment the following line to make the "one person at a time is logged in" working ##
+			session_regenerate_id(true);
 			$this->setUid($uid);
 			$this->updateTimeout($timestamp + $this->getTimeout());
+
+			return session_id();
 		}
 	}

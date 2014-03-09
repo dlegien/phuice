@@ -190,6 +190,38 @@
 		}
 
 		/**
+		 * Tries to guess the browser that is used
+		 * 
+		 * @return	array
+		 */
+		public function browserInfo($agent = null)
+		{
+			$browsers = array(	'msie', 'trident', 'firefox', 'safari', 'webkit', 'opera', 'netscape', 'chrome',
+								'konqueror', 'gecko', 'version', 'mobile');
+
+			$agent 	= strtolower($agent ? $agent : $_SERVER['HTTP_USER_AGENT']);
+  			$pattern= '#(?<browser>' . join('|', $browsers) .
+    				  ')[/ ]+(?<version>[0-9]+(?:\.[0-9]+)?)#';
+
+  			if (!preg_match_all($pattern, $agent, $matches)) return array("BROWSER" => "unknown");
+
+			$i = count($matches['browser'])-1;
+			if($i>0) {
+				$browser 			= $matches['browser'][$i-1];
+				$renderingEngine 	= $matches['browser'][$i];	
+				$engineVersion		= $matches['version'][$i];
+				$version 			= $matches['version'][$i-1];
+			} else {
+				$browser 			= $matches['browser'][$i];
+				$renderingEngine 	= $matches['browser'][$i];
+				$engineVersion		= $matches['version'][$i];	
+				$version 			= $matches['version'][$i];
+			}	
+			
+			return array("BROWSER" => $browser, "RENDERINGENGINE" => $renderingEngine, "VERSION" => $version, "ENGINEVERSION" => $engineVersion);
+		}
+
+		/**
 		 * Authenticates the user by verifying the password, starting a
 		 * session and redirecting the user.
 		 * 
@@ -199,6 +231,66 @@
 		 */
 		public function authenticate($username, $password, $redirect) 
 		{
+			//check browser
+
+			$browserCheck = false; #TODO: ADD PROPER SETTING
+			
+			if ($browserCheck)
+			{
+				$browserInfo = $this->browserInfo();
+				switch($browserInfo["BROWSER"]) {
+					case "mobile":
+						if($browserInfo["RENDERINGENGINE"] == "safari") {
+							//iOS browser
+							if($browserInfo["ENGINEVERSION"]<7000) {
+								// < iOS 5
+								$this->renderFailure($redirect, 'browser');
+								return true;
+							}
+						}
+						break;
+					case "version":
+						if($browserInfo["RENDERINGENGINE"] == "safari") {
+							//ANDROID STD BROWSER
+							if(floatval($browserInfo["VERSION"])<2.1) {
+								$this->renderFailure($redirect, 'browser');
+								return true;
+							}
+						}
+						break;
+					case "chrome":
+						if($browserInfo["VERSION"]<30) {
+							$this->renderFailure($redirect, 'browser');
+							return true;
+						}
+						break;
+					case "gecko":
+						//firefox
+						if($browserInfo["ENGINEVERSION"]<24) {
+							$this->renderFailure($redirect, 'browser');
+							return true;
+						}
+						break;
+					case "webkit":
+						if($browserInfo["RENDERINGENGINE"] == "safari") {
+							if($browserInfo["VERSION"]<5.1) {
+								$this->renderFailure($redirect, 'browser');
+								return true;
+							}
+						}			
+						break;
+					case "msie":
+						if($browserInfo["VERSION"]<8) {
+							$this->renderFailure($redirect, 'browser');
+							return true;
+						}
+						break;
+					default:
+						//could die here; unknown browser
+				}
+			}
+
+			//check credentials
 			$gateway = $this->getGateway();
 			if($user = $gateway->findByUsername($username)) 
 			{
@@ -210,8 +302,10 @@
 
 				if($user->isActive() && $this->verifyPassword($user->getLoginPassword(), $password)) 
 				{
-					$this->getSessionManager()->startSession($user->getId(), time());
+					$newSessId = $this->getSessionManager()->startSession($user->getId(), $user->getSessionId(), time());
 					$this->getSessionManager()->setLanguage($user->getLanguage());
+					$user->setSessionId($newSessId);
+					$gateway->update($user);
 					$this->redirect($redirect);
 				}
 				else
@@ -268,7 +362,7 @@
 							if (empty($msg))
 							{
 								$new_password = $this->getHashWrapper()->hashPassword($newPassword);
-								$user->setPassword($new_password);
+								$user->setLoginPassword($new_password);
 								$user->setResetPassword(0);
 								$user->setToken(null);
 								$user->setTokenTime(null);
@@ -374,7 +468,17 @@
 		private function renderFailure($redirect, $failure) 
 		{
 			$this->getView()->redirect = $redirect;
-			$this->getView()->failure = $this->getView()->translate('L_WRONG_CREDENTIALS');
+
+			switch($failure) {
+				case "credentials":
+					$this->getView()->failure = $this->getView()->translate('L_WRONG_CREDENTIALS');
+					break;
+				case "browser":
+					$this->getView()->failure = $this->getView()->translate('L_UNSUPPORTED_BROWSER');
+					break;
+				default:
+					break;	
+			}			
 			$this->getView()->render();
 		}
 

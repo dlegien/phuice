@@ -290,6 +290,16 @@
 			return false;
 		}
 
+		private function isHTML($str) {
+			//check for html opening tag
+			if( $pos = stripos($str, "<") === false )
+				return false;
+			//check for html closing tag
+			if( stripos($str, ">", $pos) === false )
+				return false;
+			return true;
+		}
+
 		/**
 		 * Filters the data set by... ? 
 		 * 
@@ -300,6 +310,11 @@
 				return false;
 
 			$column = $this->createColumnArray($col);
+
+			//watch out..dirty
+				//check if is string comparison but field contains html
+			if( $cmp == "=" && isset($column[0]) && $this->isHTML($column[0]) )
+				$cmp = "contains";
 
 			foreach($column as $key => $value) {
 				switch($cmp) {

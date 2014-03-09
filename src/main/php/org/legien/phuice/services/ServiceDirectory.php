@@ -94,9 +94,9 @@
 		 */
 		private function resolveName($name) 
 		{
-			if(substr($name, 0, 2) == '%%' && substr($name, strlen($name)-2, 2) == '%%') 
+			if(substr($name, 0, 2) == '%%' && substr($name, -2) == '%%') 
 			{
-				return $this->getParameter(substr($name,2,strlen($name)-4));
+				return $this->getParameter(substr($name,2,-2));
 			}
 			return $name;
 		}

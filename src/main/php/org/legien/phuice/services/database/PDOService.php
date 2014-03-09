@@ -34,6 +34,14 @@
 	 */
 	class PDOService implements IPDOService
 	{
+
+		/**
+		 * The database name.
+		 * 
+		 * @var String
+		 */
+		private $_database;
+
 		/**
 		 * The database connection.
 		 * 
@@ -70,7 +78,7 @@
 				// We are using mysql
 				$dsn = $type.':dbname='.$database.';host='.$host;
 			}
-						
+			$this->_database = $database;			
 			$this->_connection = new \PDO($dsn, $username, $password);
 			$this->_evaluator = $evaluator;
 		}
@@ -174,5 +182,19 @@
 		{
 			return new PDOTransaction($this->getConnection());
 		}
+
+
+		/**
+		 * Returns the database name.
+		 * 
+		 * @return String
+		 */
+		public function getDatabaseName()
+		{
+			return (string)$this->_database;
+		}
+
+
+
 	}
 	

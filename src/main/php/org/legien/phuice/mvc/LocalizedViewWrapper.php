@@ -87,4 +87,17 @@
 				
 			return $this->getTranslator()->translate($string, $args);
 		}
+		
+
+		/**
+		 * Returns the value of a profile setting for a specific user.
+		 * 
+		 * @param string $string	The setting key.
+		 * 
+		 * @return value of the setting for the logged user profile
+		 */
+		public function getUserProfileSetting($settingString)
+		{
+			return $this->getLayout()->getUserProfileSetting($settingString);
+		}
 	}
