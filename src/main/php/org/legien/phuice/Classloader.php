@@ -102,7 +102,7 @@
 		 * 
 		 * @throws ClassNotFoundException	If the class could not be resolved.
 		 */
-		protected function loader($className) 
+		public function loader($className) 
 		{
 			foreach($this->_loaders as $value) 
 			{
