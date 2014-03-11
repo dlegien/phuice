@@ -82,7 +82,9 @@
 		
 		public function remove($entity)
 		{
-			return $this->getEntityManager()->remove($entity);
+			$return = $this->getEntityManager()->remove($entity);
+			$this->getEntityManager()->flush();
+			return $return;
 		}
 		
 		public function getConnection()
